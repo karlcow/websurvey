@@ -1,0 +1,29 @@
+# Code for Analyzing CSS properties from a list of URIs.
+
+## Goals
+
+* Given a list of URIs: sitelist = [uri1, uri2, …, urin]
+* HTTP GET the URI (with a specific user agent)
+* Parse it and find the CSS related URIs and the properties in style element
+* HTTP GET each URIs (with the same user agent)
+* Compile all the CSS Properties in a single object
+* Analyze this object with different rules
+
+## Analysis Modules
+
+### Vendor Prefixes
+
+	for selectorGroup in cssRules:
+		score = 0
+		// separate in 
+		if -vendorA-rule in declarationNameList:
+			score =+ 1
+		    if -vendorB-rule in declarationNameList:
+			score =+ 2
+			if rule in declarationNameList:
+			score =+ 4
+
+* if score = 1, -vendorA- rule only in the file
+* if score = 3, -vendorA- + -vendorB-
+* if score = 5, -vendorA- + unprefixed
+* if score = 7, -vendorA- + -vendorB- + unprefixed
