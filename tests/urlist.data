@@ -1,0 +1,5 @@
+# The list of URIs to be processed by the python code
+# UTF-8 format
+http://www.opera.com/
+http://dev.opera.com/
+http://www.w3.org/
