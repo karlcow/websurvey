@@ -17,11 +17,26 @@ class UriCheck:
         self.uri = ""
 
     def ishttpURI(self, uri):
+        """Given a URI,
+        returns True if http or https
+        returns False if not http or https"""
         req = urllib2.Request(uri)
         if req.get_type() in ['http', 'https']:
             return True
         else:
             return False
+
+    def getRequest(self, uri, uastring):
+        """Given a URI and a UA String,
+        returns a list with uri, newlocation, statuscode, content"""
+        # [uri, newlocation, statuscode,  content]
+        pass
+
+    def compareUriContent(self, uri1, uri2):
+        """Given two URIs,
+        compare if the content is the same."""
+        # Useful when evolution along a parameter (time, uastring, etc.)
+        pass
 
 
 def main():

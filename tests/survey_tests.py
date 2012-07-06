@@ -35,6 +35,18 @@ class UriCheckTests(unittest.TestCase):
         httpuristart = 'http://www.opera.com/   '
         self.assertTrue(gooduri.ishttpURI(httpuristart))
 
+    def testGetRequestStatusOK(self):
+        "Check if everything is ok"
+        pass
+
+    def testGetRequestStatus4xx(self):
+        "Check if we advertise the right message when 4xx"
+        pass
+
+    def testGetRequestLocation(self):
+        "Check if we grab the right location when there is a redirection"
+        pass
+
 
 def main():
     unittest.main()
