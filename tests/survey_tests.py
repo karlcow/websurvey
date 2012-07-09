@@ -1,9 +1,11 @@
 import unittest
 from survey import core
+import BaseHTTPServer
+from SimpleHTTPServer import SimpleHTTPRequestHandler
 
 
 class UriCheckTests(unittest.TestCase):
-    """Tests for parseUriFile"""
+    """Tests for Uris"""
 
     def testHttpURI(self):
         gooduri = core.UriCheck()
@@ -34,6 +36,14 @@ class UriCheckTests(unittest.TestCase):
         gooduri = core.UriCheck()
         httpuristart = 'http://www.opera.com/   '
         self.assertTrue(gooduri.ishttpURI(httpuristart))
+
+
+class HttpRequests(unittest.TestCase):
+    """Tests for HTTP"""
+
+    def setUp(self):
+        "Starting a Web server"
+        pass
 
     def testGetRequestStatusOK(self):
         "Check if everything is ok"
