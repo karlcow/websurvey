@@ -65,12 +65,17 @@ class CssTests(unittest.TestCase):
 
     def testCssList(self):
         WebSiteUri = 'http://www.opera.com/'
-        cssUriList = ['http://www.opera.com/css/screen.css',
+        cssUriList = [
         'http://www.opera.com/css/handheld.css',
+        'http://www.opera.com/css/screen.css',
         'http://www.opera.com/css/print.css',
         'http://www.opera.com/css/pages/home.css']
         content = self.req.getContent(WebSiteUri)
-        self.assertEqual(self.css.getCssUriList(content, WebSiteUri), cssUriList)
+        cssUriListReq = self.css.getCssUriList(content, WebSiteUri)
+        # we need to compare ordered list.
+        cssUriListReq.sort()
+        cssUriList.sort()
+        self.assertListEqual(cssUriListReq, cssUriList)
 
 
 def main():
