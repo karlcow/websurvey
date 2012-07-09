@@ -1,1 +1,2 @@
 requests==0.13.2
+cssutils==0.9.10b1
