@@ -9,9 +9,15 @@ see LICENSE
 """
 
 import urllib2
+import urlparse
+import requests
+import StringIO
+from lxml import etree
+import cssutils
 
 
 class UriCheck:
+    """Some control about URIs from the file"""
 
     def __init__(self):
         self.uri = ""
@@ -26,6 +32,14 @@ class UriCheck:
         else:
             return False
 
+
+class HttpRequests:
+    """Servers behave depending on what is asking which URI"""
+
+    def __init__(self):
+        self.content = ""
+        self.statuscode = ""
+
     def getRequest(self, uri, uastring):
         """Given a URI and a UA String,
         returns a list with uri, newlocation, statuscode, content"""
@@ -38,9 +52,33 @@ class UriCheck:
         # Useful when evolution along a parameter (time, uastring, etc.)
         pass
 
+    def getContent(self, uri):
+        r = requests.get(uri)
+        return r.text
+
+
+class Css:
+    """Grabing All CSS for one given URI"""
+
+    def __init__(self):
+        self.htmltext = ""
+
+    def getCssUriList(self, htmltext, uri):
+        """Given an htmltext, get the list of linked CSS"""
+        tree = etree.HTML(htmltext)
+        sheets = tree.xpath('//link[@rel="stylesheet"]/@href')
+        for i, sheet in enumerate(sheets):
+            cssurl = urlparse.urljoin(uri, sheet)
+            sheets[i] = cssurl
+        return sheets
+
 
 def main():
-    pass
+    TESTURI = 'http://www.opera.com/'
+    req = HttpRequests()
+    content = req.getContent(TESTURI)
+    css = Css()
+    print css.getCssUriList(content, TESTURI)
 
 if __name__ == '__main__':
-    pass
+    main()

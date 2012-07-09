@@ -1,7 +1,5 @@
 import unittest
 from survey import core
-import BaseHTTPServer
-from SimpleHTTPServer import SimpleHTTPRequestHandler
 
 
 class UriCheckTests(unittest.TestCase):
@@ -38,7 +36,7 @@ class UriCheckTests(unittest.TestCase):
         self.assertTrue(gooduri.ishttpURI(httpuristart))
 
 
-class HttpRequests(unittest.TestCase):
+class HttpRequestsTests(unittest.TestCase):
     """Tests for HTTP"""
 
     def setUp(self):
@@ -56,6 +54,23 @@ class HttpRequests(unittest.TestCase):
     def testGetRequestLocation(self):
         "Check if we grab the right location when there is a redirection"
         pass
+
+
+class CssTests(unittest.TestCase):
+    """Tests for CSS requests"""
+
+    def setUp(self):
+        self.css = core.Css()
+        self.req = core.HttpRequests()
+
+    def testCssList(self):
+        WebSiteUri = 'http://www.opera.com/'
+        cssUriList = ['http://www.opera.com/css/screen.css',
+        'http://www.opera.com/css/handheld.css',
+        'http://www.opera.com/css/print.css',
+        'http://www.opera.com/css/pages/home.css']
+        content = self.req.getContent(WebSiteUri)
+        self.assertEqual(self.css.getCssUriList(content, WebSiteUri), cssUriList)
 
 
 def main():
