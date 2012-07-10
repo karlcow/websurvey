@@ -64,18 +64,23 @@ class CssTests(unittest.TestCase):
         self.req = core.HttpRequests()
 
     def testCssList(self):
+        "For a given Web site, check if we get the right list of linked stylesheets"
         WebSiteUri = 'http://www.opera.com/'
-        cssUriList = [
+        expected = [
         'http://www.opera.com/css/handheld.css',
         'http://www.opera.com/css/screen.css',
         'http://www.opera.com/css/print.css',
         'http://www.opera.com/css/pages/home.css']
         content = self.req.getContent(WebSiteUri)
-        cssUriListReq = self.css.getCssUriList(content, WebSiteUri)
+        actual = self.css.getCssUriList(content, WebSiteUri)
         # we need to compare ordered list.
-        cssUriListReq.sort()
-        cssUriList.sort()
-        self.assertListEqual(cssUriListReq, cssUriList)
+        actual.sort()
+        expected.sort()
+        self.assertListEqual(expected, actual)
+
+    def testRulesList(self):
+        "for a given CSS do we list the right list of rules"
+        pass
 
 
 def main():
