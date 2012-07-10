@@ -63,6 +63,10 @@ class CssTests(unittest.TestCase):
         self.css = core.Css()
         self.req = core.HttpRequests()
 
+    def tearDown(self):
+        self.css = None
+        self.req = None
+
     def testCssList(self):
         "For a given Web site, check if we get the right list of linked stylesheets"
         WebSiteUri = 'http://www.opera.com/'
@@ -88,7 +92,7 @@ class CssTests(unittest.TestCase):
         self.assertTrue(self.css.hasStyleElement(content))
 
     def testStyleElementRules(self):
-        "When there is a style element, do we gest the expected rules?"
+        "When there is a style element, do we get the expected rules?"
         # we might need to normalize to cope for spaces in the test.
         content = "<!doctype><html><head><title>foo</title><style>.foo {color: #fff;}</style></head><body>foo</body></html>"
         expected = ".foo {color: #fff;}"
