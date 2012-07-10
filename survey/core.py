@@ -11,7 +11,6 @@ see LICENSE
 import urllib2
 import urlparse
 import requests
-import StringIO
 from lxml import etree
 import cssutils
 
@@ -72,13 +71,28 @@ class Css:
             sheets[i] = cssurl
         return sheets
 
+    def getCssRules(self, uri):
+        """Given the URI of a CSS file,
+        return the list of all CSS rules,
+        including all the imports."""
+        stylesheet = cssutils.parseUrl(uri)
+        stylesheet = cssutils.resolveImports(stylesheet)
+        return stylesheet
+
 
 def main():
-    TESTURI = 'http://www.opera.com/'
+    TESTURI = 'http://lagrange.test.site/tmp/toto.html'
     req = HttpRequests()
     content = req.getContent(TESTURI)
     css = Css()
-    print css.getCssUriList(content, TESTURI)
+    cssutils.ser.prefs.lineNumbers = True
+    cssutils.ser.prefs.resolveVariables = True
+    cssurilist = css.getCssUriList(content, TESTURI)
+    for stylesheeturi in cssurilist:
+        stylesheet = css.getCssRules(stylesheeturi)
+        rules = (rule for rule in stylesheet if rule.type == rule.STYLE_RULE)
+        for rule in rules:
+            print rule.cssText
 
 if __name__ == '__main__':
     main()
