@@ -87,9 +87,14 @@ class CssTests(unittest.TestCase):
         pass
 
     def testHasStyleElement(self):
-        "for a given URI, is there a style element? return True if there is."
+        "for a given URI, there a style element. return True."
         content = "<!doctype><html><head><title>foo</title><style>.foo {color: #fff;}</style></head><body>foo</body></html>"
         self.assertTrue(self.css.hasStyleElement(content))
+
+    def testNoStyleElement(self):
+        "for a given URI, there is no style element. return False"
+        content = "<!doctype><html><head><title>foo</title></head><body>foo</body></html>"
+        self.assertFalse(self.css.hasStyleElement(content))
 
     def testStyleElementRules(self):
         "When there is a style element, do we get the expected rules?"
