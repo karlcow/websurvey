@@ -82,6 +82,11 @@ class CssTests(unittest.TestCase):
         "for a given CSS do we list the right list of rules"
         pass
 
+    def testHasStyleElement(self):
+        "for a given URI, is there a style element? return True if there is."
+        content = "<!doctype><html><head><title>foo</title><style>.foo {color: #fff;}</style></head><body>foo</body></html>"
+        self.assertTrue(self.css.hasStyleElement(content))
+
     def testStyleElementRules(self):
         "When there is a style element, do we gest the expected rules?"
         # we might need to normalize to cope for spaces in the test.
