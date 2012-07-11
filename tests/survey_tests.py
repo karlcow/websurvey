@@ -69,14 +69,19 @@ class CssTests(unittest.TestCase):
 
     def testCssList(self):
         "For a given Web site, check if we get the right list of linked stylesheets"
-        WebSiteUri = 'http://www.opera.com/'
-        expected = [
-        'http://www.opera.com/css/handheld.css',
-        'http://www.opera.com/css/screen.css',
-        'http://www.opera.com/css/print.css',
-        'http://www.opera.com/css/pages/home.css']
-        content = self.req.getContent(WebSiteUri)
-        actual = self.css.getCssUriList(content, WebSiteUri)
+        WebSiteUri = "http://example.org/"
+        content_input = """<!doctype html>
+            <html>
+            <head>
+                <title>Test</title>
+                <link rel="stylesheet" href="/css/style1.css">
+                <link rel="stylesheet" href="http://example.org/css/style2.css">
+            </head>
+            <body>
+            </body>
+            </html>"""
+        expected = ['http://example.org/css/style1.css', 'http://example.org/css/style2.css']
+        actual = self.css.getCssUriList(content_input, WebSiteUri)
         # we need to compare ordered list.
         actual.sort()
         expected.sort()
