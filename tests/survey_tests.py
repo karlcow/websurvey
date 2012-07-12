@@ -110,7 +110,10 @@ class CssTests(unittest.TestCase):
     def testStyleElementRules(self):
         "When there is a style element, do we get the expected rules?"
         # we might need to normalize to cope for spaces in the test.
-        content = "<!doctype><html><head><title>foo</title><style>.foo {color: #fff;}</style></head><body>foo</body></html>"
+        content = """<!doctype><html><head><title>foo</title>
+            <style>.foo {
+            color: #fff;}</style>
+            </head><body>foo</body></html>"""
         expected = ".foo {color: #fff;}"
         actual = self.css.getStyleElementRules(content)
         self.assertEqual(expected, actual)
