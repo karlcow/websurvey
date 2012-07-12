@@ -1,0 +1,46 @@
+# STEPS
+
+## Read the top URI of urilist.txt -> webSiteUri
+(do not put everything in Memory)
+## HTTP GET webSiteUri with uaRef -> respRef
+	if 200 OK, get cssRulesRef
+	    (ignore media print, collect style element rules)
+	    (check for redirection)
+		-> (webSiteUri, uaRef, HTTPCode, cssRulesRef)
+	if 4*, Log the Error, and go to next URI
+		-> (webSiteUri, uaRef, HTTPCode)
+## HTTP GET webSiteUri with uaTest -> respTest
+	if 200 OK, get cssRulesTest
+	    (ignore media print, collect style element rules)
+	    (check for redirection)
+		-> (webSiteUri, uaTest, HTTPCode, cssRulesTest)
+	if 4*, Log the Error, and go to next URI
+		-> (webSiteUri, uaTest, HTTPCode)
+## diff cssRulesRef cssRulesTest
+	if "" continue
+	if !"", log the error, go to next URI (?)
+## for each cssRules group, find(-vendorRef-)
+	There is n of them, for each of n:
+		if (-vendorRef-) exists
+			score = 1
+			check if (-vendorTest-) exists
+				score =+ 2
+			check if (noVendor) exists 
+				score =+ 4
+		record websiteURI, score, cssproperty
+## Go to Next URI
+
+
+
+    # TESTURI = 'http://lagrange.test.site/tmp/toto.html'
+    # req = HttpRequests()
+    # content = req.getContent(TESTURI)
+    # css = Css()
+    # cssutils.ser.prefs.lineNumbers = True
+    # cssutils.ser.prefs.resolveVariables = True
+    # cssurilist = css.getCssUriList(content, TESTURI)
+    # for stylesheeturi in cssurilist:
+    #     stylesheet = css.getCssRules(stylesheeturi)
+    #     rules = (rule for rule in stylesheet if rule.type == rule.STYLE_RULE)
+    #     for rule in rules:
+    #         print rule.cssText
