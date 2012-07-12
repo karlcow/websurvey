@@ -53,7 +53,8 @@ class HttpRequests:
         r = requests.get(uri, headers=headers)
         statuscode = r.status_code
         responseheaders = r.headers
-        return statuscode, responseheaders
+        history = r.history
+        return statuscode, responseheaders, history
 
     def compareUriContent(self, uri1, uri2):
         """Given two URIs,
@@ -101,7 +102,14 @@ class Css:
             return True
 
     def getStyleElementRules(self, htmltext):
-        pass
+        """Given an htmltext,
+        let's return the CSS rules contained in the content"""
+        compiledstyle = ""
+        tree = etree.HTML(htmltext)
+        styleelements = tree.xpath('//style')
+        for styleelt in styleelements:
+            compiledstyle = compiledstyle + styleelt.text
+        return compiledstyle
 
 
 def main():
@@ -112,22 +120,10 @@ def main():
             if uri.startswith("#"):
                 continue
             if uc.ishttpURI(uri.strip()):
-                print uri
-                content = req.getContent(uri)
-                print content
+                (statuscode, responseheaders, history) = req.getRequest(uri, UATEST)
+                for resp in history:
+                    print resp.headers
 
-    # TESTURI = 'http://lagrange.test.site/tmp/toto.html'
-    # req = HttpRequests()
-    # content = req.getContent(TESTURI)
-    # css = Css()
-    # cssutils.ser.prefs.lineNumbers = True
-    # cssutils.ser.prefs.resolveVariables = True
-    # cssurilist = css.getCssUriList(content, TESTURI)
-    # for stylesheeturi in cssurilist:
-    #     stylesheet = css.getCssRules(stylesheeturi)
-    #     rules = (rule for rule in stylesheet if rule.type == rule.STYLE_RULE)
-    #     for rule in rules:
-    #         print rule.cssText
 
 if __name__ == '__main__':
     main()
