@@ -13,6 +13,13 @@ import urlparse
 import requests
 from lxml import etree
 import cssutils
+import os.path
+
+# CONSTANT - ALL OF THESE will have to be passed as arguements.
+# List of URIs, 1 URI by line
+SITELIST = os.path.dirname(__file__) + "/../tests/urlist.data"
+UAREF = "Opera/9.80 (Macintosh; Intel Mac OS X 10.7.4; U; fr) Presto/2.10.289 Version/12.00"
+UATEST = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.6 (KHTML, like Gecko) Chrome/20.0.1092.0 Safari/536.6"
 
 
 class UriCheck:
@@ -42,8 +49,11 @@ class HttpRequests:
     def getRequest(self, uri, uastring):
         """Given a URI and a UA String,
         returns a list with uri, newlocation, statuscode, content"""
-        # [uri, newlocation, statuscode,  content]
-        pass
+        headers = {'User-Agent': uastring}
+        r = requests.get(uri, headers=headers)
+        statuscode = r.status_code
+        responseheaders = r.headers
+        return statuscode, responseheaders
 
     def compareUriContent(self, uri1, uri2):
         """Given two URIs,
@@ -90,15 +100,29 @@ class Css:
         else:
             return True
 
+    def getStyleElementRules(self, htmltext):
+        pass
+
 
 def main():
-    TESTURI = 'http://lagrange.test.site/tmp/toto.html'
+    uc = UriCheck()
     req = HttpRequests()
-    content = req.getContent(TESTURI)
-    css = Css()
-    cssutils.ser.prefs.lineNumbers = True
-    cssutils.ser.prefs.resolveVariables = True
-    cssurilist = css.getCssUriList(content, TESTURI)
+    with open(SITELIST) as f:
+        for uri in f:
+            if uri.startswith("#"):
+                continue
+            if uc.ishttpURI(uri.strip()):
+                print uri
+                content = req.getContent(uri)
+                print content
+
+    # TESTURI = 'http://lagrange.test.site/tmp/toto.html'
+    # req = HttpRequests()
+    # content = req.getContent(TESTURI)
+    # css = Css()
+    # cssutils.ser.prefs.lineNumbers = True
+    # cssutils.ser.prefs.resolveVariables = True
+    # cssurilist = css.getCssUriList(content, TESTURI)
     # for stylesheeturi in cssurilist:
     #     stylesheet = css.getCssRules(stylesheeturi)
     #     rules = (rule for rule in stylesheet if rule.type == rule.STYLE_RULE)
