@@ -109,7 +109,12 @@ class Css:
         styleelements = tree.xpath('//style')
         for styleelt in styleelements:
             compiledstyle = compiledstyle + styleelt.text
-        return compiledstyle
+        cssutils.ser.prefs.indentClosingBrace = False
+        cssutils.ser.prefs.keepComments = False
+        cssutils.ser.prefs.lineSeparator = u''
+        cssutils.ser.prefs.omitLastSemicolon = False
+        stylesheet = cssutils.parseString(compiledstyle)
+        return stylesheet
 
 
 def main():

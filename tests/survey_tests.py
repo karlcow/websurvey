@@ -111,11 +111,13 @@ class CssTests(unittest.TestCase):
         "When there is a style element, do we get the expected rules?"
         # we might need to normalize to cope for spaces in the test.
         content = """<!doctype><html><head><title>foo</title>
-            <style>.foo {
+            <style>.foo {/*comment*/
             color: #fff;}</style>
+            <!-- foo -->
+            <style>  .bar {margin: 10px;}</style>
             </head><body>foo</body></html>"""
-        expected = ".foo {color: #fff;}"
-        actual = self.css.getStyleElementRules(content)
+        expected = u'.foo {color: #fff;}.bar {margin: 10px;}'
+        actual = self.css.getStyleElementRules(content).cssText
         self.assertEqual(expected, actual)
 
 
