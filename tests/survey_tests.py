@@ -40,12 +40,18 @@ class HttpRequestsTests(unittest.TestCase):
     """Tests for HTTP"""
 
     def setUp(self):
-        "Starting a Web server"
-        pass
+        self.req = core.HttpRequests()
+
+    def tearDown(self):
+        self.req = None
 
     def testGetRequestStatusOK(self):
-        "Check if everything is ok"
-        pass
+        "Check if HTTP status code is 200"
+        expected = 200
+        uastring = "foo"
+        webSiteUri = "http://example.org/foobar/"
+        actual = self.req.getRequest(webSiteUri, uastring)[0]
+        self.assertEqual(expected, actual)
 
     def testGetRequestStatus4xx(self):
         "Check if we advertise the right message when 4xx"
