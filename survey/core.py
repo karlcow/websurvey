@@ -135,11 +135,10 @@ class Css:
         verify that the the property name for this vendor name exists
         return True"""
         expectedproperty = "-%s-%s" % (vendorname, propertyname)
-        for declaration in declarationslist:
-            if declaration.name == expectedproperty:
-                return True
-            else:
-                return False
+        for expectedproperty in declarationslist.keys():
+            return True
+        else:
+            return False
 
 
 def main():
