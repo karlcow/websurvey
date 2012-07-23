@@ -14,12 +14,14 @@ import requests
 from lxml import etree
 import cssutils
 import os.path
+import logging
 
 # CONSTANT - ALL OF THESE will have to be passed as arguements.
 # List of URIs, 1 URI by line
 SITELIST = os.path.dirname(__file__) + "/../tests/urlist.data"
 UAREF = "Opera/9.80 (Macintosh; Intel Mac OS X 10.7.4; U; fr) Presto/2.10.289 Version/12.00"
 UATEST = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.6 (KHTML, like Gecko) Chrome/20.0.1092.0 Safari/536.6"
+logging.basicConfig(filename='log_filename.txt', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 class UriCheck:
@@ -75,12 +77,26 @@ class Css:
 
     def getCssUriList(self, htmltext, uri):
         """Given an htmltext, get the list of linked CSS"""
+        cssurilist = []
         tree = etree.HTML(htmltext)
-        sheets = tree.xpath('//link[@rel="stylesheet"]/@href')
-        for i, sheet in enumerate(sheets):
-            cssurl = urlparse.urljoin(uri, sheet)
-            sheets[i] = cssurl
-        return sheets
+        csspathlist = tree.xpath('//link[@rel="stylesheet"]/@href')
+        print dir(enumerate(csspathlist))
+        for i, csspath in enumerate(csspathlist):
+            cssurl = urlparse.urljoin(uri, csspath)
+            print i, cssurl, csspath
+            cssurilist.append(cssurl)
+        return cssurilist
+
+    def getCssHttpUriList(self, http_input, uri):
+        """Given HTTP headers for a URI, extract the list of linked CSS"""
+        cssurilist = []
+        # parse HTTP header for Link: <uri>;rel=stylesheet
+        # r.headers['Link']
+        # csspathlist
+        for i, csspath in enumerate(csspathlist):
+            cssurl = urlparse.urljoin(uri, csspath)
+            cssurilist.append(cssurl)
+        return cssurilist
 
     def getCssRules(self, uri):
         """Given the URI of a CSS file,
@@ -120,15 +136,36 @@ class Css:
 def main():
     uc = UriCheck()
     req = HttpRequests()
+    css = Css()
     with open(SITELIST) as f:
         for uri in f:
+            # remove leading, trailing spaces
+            uri = uri.strip()
             if uri.startswith("#"):
                 continue
-            if uc.ishttpURI(uri.strip()):
-                (statuscode, responseheaders, history) = req.getRequest(uri, UATEST)
-                for resp in history:
-                    print resp.headers
+            if uc.ishttpURI(uri):
+                htmltext = req.getContent(uri)
+                if css.hasStyleElement(htmltext):
+                    styleeltrule = css.getStyleElementRules(htmltext)
+                    print repr(styleeltrule)
+                listcss = css.getCssUriList(htmltext, uri)
+                for uricss in listcss:
+                    ruleslist = css.getCssRules(uricss)
+                    for rules in ruleslist:
+                        if rules.type == 1:
+                            #This is a rule, we process
+                            score = 0
+                            for rule in rules.style:
+                                # this is the property list -> rules.style
+                                # I need to segregate each groups.
+                                if rule.name.startswith("-webkit-"):
+                                    score = score + 1
+                                if rule.name.startswith("-o-"):
+                                    score = score + 2
+                        if score != 0:
+                            print score, rules.selectorText
 
+                    # logging.info(responseheaders)
 
 if __name__ == '__main__':
     main()
