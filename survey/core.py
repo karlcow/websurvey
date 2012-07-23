@@ -80,10 +80,9 @@ class Css:
         cssurilist = []
         tree = etree.HTML(htmltext)
         csspathlist = tree.xpath('//link[@rel="stylesheet"]/@href')
-        print dir(enumerate(csspathlist))
         for i, csspath in enumerate(csspathlist):
             cssurl = urlparse.urljoin(uri, csspath)
-            print i, cssurl, csspath
+            logging.debug("getCssUriList: ", i, cssurl, csspath)
             cssurilist.append(cssurl)
         return cssurilist
 
@@ -132,6 +131,11 @@ class Css:
         stylesheet = cssutils.parseString(compiledstyle)
         return stylesheet
 
+    def hasVendorProperty(vendorname, propertyname, declarationslist):
+        """Given a declarationslist, a vendor name, and propertyname,
+        verify that the the property name for this vendor name exists
+        return True"""
+
 
 def main():
     uc = UriCheck()
@@ -147,23 +151,25 @@ def main():
                 htmltext = req.getContent(uri)
                 if css.hasStyleElement(htmltext):
                     styleeltrule = css.getStyleElementRules(htmltext)
-                    print repr(styleeltrule)
-                listcss = css.getCssUriList(htmltext, uri)
-                for uricss in listcss:
-                    ruleslist = css.getCssRules(uricss)
-                    for rules in ruleslist:
-                        if rules.type == 1:
-                            #This is a rule, we process
+                    if styleeltrule != "":
+                        logging.info("There is a style element at %s" % (uri))
+                cssurislist = css.getCssUriList(htmltext, uri)
+                for cssuri in cssurislist:
+                    cssruleslist = css.getCssRules(cssuri)
+                    for cssrule in cssruleslist:
+                        if cssrule.type == 1:
+                            # This is a rule, we process
+                            # Reminder cssrule.type == 0 -> comment
                             score = 0
-                            for rule in rules.style:
+                            for declaration in cssrule.style:
                                 # this is the property list -> rules.style
                                 # I need to segregate each groups.
-                                if rule.name.startswith("-webkit-"):
+                                if declaration.name.startswith("-webkit-"):
                                     score = score + 1
-                                if rule.name.startswith("-o-"):
+                                if declaration.name.startswith("-o-"):
                                     score = score + 2
-                        if score != 0:
-                            print score, rules.selectorText
+                        # if score != 0:
+                        #     print score, rules.selectorText
 
                     # logging.info(responseheaders)
 
