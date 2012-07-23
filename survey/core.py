@@ -82,7 +82,6 @@ class Css:
         csspathlist = tree.xpath('//link[@rel="stylesheet"]/@href')
         for i, csspath in enumerate(csspathlist):
             cssurl = urlparse.urljoin(uri, csspath)
-            logging.debug("getCssUriList: ", i, cssurl, csspath)
             cssurilist.append(cssurl)
         return cssurilist
 
@@ -131,10 +130,16 @@ class Css:
         stylesheet = cssutils.parseString(compiledstyle)
         return stylesheet
 
-    def hasVendorProperty(vendorname, propertyname, declarationslist):
+    def hasVendorProperty(self, vendorname, propertyname, declarationslist):
         """Given a declarationslist, a vendor name, and propertyname,
         verify that the the property name for this vendor name exists
         return True"""
+        expectedproperty = "-%s-%s" % (vendorname, propertyname)
+        for declaration in declarationslist:
+            if declaration.name == expectedproperty:
+                return True
+            else:
+                return False
 
 
 def main():
