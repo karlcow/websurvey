@@ -1,5 +1,6 @@
 import unittest
 from survey import core
+import cssutils
 
 
 class UriCheckTests(unittest.TestCase):
@@ -45,14 +46,6 @@ class HttpRequestsTests(unittest.TestCase):
     def tearDown(self):
         self.req = None
 
-    def testGetRequestStatusOK(self):
-        "Check if HTTP status code is 200"
-        expected = 200
-        uastring = "foo"
-        webSiteUri = "http://example.org/foobar/"
-        actual = self.req.getRequest(webSiteUri, uastring)[0]
-        self.assertEqual(expected, actual)
-
     def testGetRequestStatus4xx(self):
         "Check if we advertise the right message when 4xx"
         pass
@@ -73,8 +66,8 @@ class CssTests(unittest.TestCase):
         self.css = None
         self.req = None
 
-    def testCssList(self):
-        "For a given Web site, check if we get the right list of linked stylesheets"
+    def testUriCssList(self):
+        "For a given html page, check if we get the right list of linked stylesheets"
         WebSiteUri = "http://example.org/"
         content_input = """<!doctype html>
             <html>
@@ -89,6 +82,16 @@ class CssTests(unittest.TestCase):
         expected = ['http://example.org/css/style1.css', 'http://example.org/css/style2.css']
         actual = self.css.getCssUriList(content_input, WebSiteUri)
         # we need to compare ordered list.
+        actual.sort()
+        expected.sort()
+        self.assertListEqual(expected, actual)
+
+    def testUriCssHttp(self):
+        "For a given set of HTTP headers, is there an HTTP Link header for CSS"
+        WebSiteUri = "http://example.org/"
+        http_input = {'content-length': '1162', 'date': 'Thu, 19 Jul 2012 19:16:43 GMT', 'content-type': 'text/html; charset=utf-8', 'server': 'Apache/2.2.21', 'link': 'http://example.org/css/style.css;rel=stylesheet'}
+        expected = ['http://example.org/css/style.css']
+        actual = self.css.getCssHttpUriList(http_input, WebSiteUri)
         actual.sort()
         expected.sort()
         self.assertListEqual(expected, actual)
@@ -119,6 +122,17 @@ class CssTests(unittest.TestCase):
         expected = u'.foo {color: #fff;}.bar {margin: 10px;}'
         actual = self.css.getStyleElementRules(content).cssText
         self.assertEqual(expected, actual)
+
+
+class SurveyTests(unittest.TestCase):
+    """Tests for survey Stats"""
+
+    def setUp(self):
+        self.survey = core.Survey()
+        self.css = core.Css()
+
+    def tearDown(self):
+        self.survey = None
 
 
 def main():
