@@ -131,6 +131,14 @@ class CssTests(unittest.TestCase):
         actual = self.css.hasVendorProperty(vendorname, propertyname, declarationslist)
         self.assertTrue(actual)
 
+    def testhasNotVendorProperty(self):
+        "For a list of CSS declarations, -vendor-property is not here, return False"
+        declarationslist = cssutils.css.CSSStyleDeclaration(cssText='color: red;-webkit-color:red;-moz-color:red;')
+        vendorname = "o"
+        propertyname = "color"
+        actual = self.css.hasVendorProperty(vendorname, propertyname, declarationslist)
+        self.assertFalse(actual)
+
 
 class SurveyTests(unittest.TestCase):
     """Tests for survey Stats"""
