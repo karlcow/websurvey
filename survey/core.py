@@ -85,16 +85,16 @@ class Css:
             cssurilist.append(cssurl)
         return cssurilist
 
-    def getCssHttpUriList(self, http_input, uri):
-        """Given HTTP headers for a URI, extract the list of linked CSS"""
-        cssurilist = []
-        # parse HTTP header for Link: <uri>;rel=stylesheet
-        # r.headers['Link']
-        # csspathlist
-        for i, csspath in enumerate(csspathlist):
-            cssurl = urlparse.urljoin(uri, csspath)
-            cssurilist.append(cssurl)
-        return cssurilist
+    # def getCssHttpUriList(self, http_input, uri):
+    #     """Given HTTP headers for a URI, extract the list of linked CSS"""
+    #     cssurilist = []
+    #     # parse HTTP header for Link: <uri>;rel=stylesheet
+    #     # r.headers['Link']
+    #     # csspathlist
+    #     for i, csspath in enumerate(csspathlist):
+    #         cssurl = urlparse.urljoin(uri, csspath)
+    #         cssurilist.append(cssurl)
+    #     return cssurilist
 
     def getCssRules(self, uri):
         """Given the URI of a CSS file,
@@ -135,9 +135,12 @@ class Css:
         verify that the the property name for this vendor name exists
         return True"""
         expectedproperty = "-%s-%s" % (vendorname, propertyname)
-        for expectedproperty in declarationslist.keys():
+        print expectedproperty
+        propertynamelist = declarationslist.keys()
+        try:
+            propertynamelist.index(expectedproperty)
             return True
-        else:
+        except ValueError:
             return False
 
 
