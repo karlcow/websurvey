@@ -54,6 +54,13 @@ class HttpRequestsTests(unittest.TestCase):
         "Check if we grab the right location when there is a redirection"
         pass
 
+    def testParseHttpLink(self):
+        "take the csv list from http link header and return a dictionary"
+        httpheader = '</path/style.css>;rel=stylesheet, </>;rel=next'
+        expected = {'stylesheet': '/path/style.css', 'next': '/'}
+        actual = self.req.parseHttpLink(httpheader)
+        self.assertDictEqual(expected, actual)
+
 
 class CssTests(unittest.TestCase):
     """Tests for CSS requests"""
