@@ -65,8 +65,21 @@ class HttpRequests:
         pass
 
     def getContent(self, uri):
+        """Return the content associated with an uri"""
         r = requests.get(uri)
         return r.text
+
+    def parseHttpLink(self, linkhttpheader):
+        """Link HTTP headers are a CSV list
+        Link: <uri>; rel=next, <uri2>; rel=stylesheet
+        {'next': 'uri', 'stylesheet': 'uri2'}
+        TODO check the spec on Web Linking"""
+        httplinkdict = {}
+        linkitems = str.split(linkhttpheader, ',')
+        for linkitem in linkitems:
+            value = str.split(linkitem, ';')
+            httplinkdict[value[0]] = value[1]
+        return httplinkdict
 
 
 class Css:
@@ -85,16 +98,20 @@ class Css:
             cssurilist.append(cssurl)
         return cssurilist
 
-    # def getCssHttpUriList(self, http_input, uri):
-    #     """Given HTTP headers for a URI, extract the list of linked CSS"""
-    #     cssurilist = []
-    #     # parse HTTP header for Link: <uri>;rel=stylesheet
-    #     # r.headers['Link']
-    #     # csspathlist
-    #     for i, csspath in enumerate(csspathlist):
-    #         cssurl = urlparse.urljoin(uri, csspath)
-    #         cssurilist.append(cssurl)
-    #     return cssurilist
+    def getCssHttpUriList(self, httpheadersdict, uri):
+        """Given HTTP headers dictionary for a URI, extract the list of linked CSS"""
+        # parse HTTP header for Link: <uri>;rel=stylesheet
+        # requests returns something such as:
+        # 'link': '</foo.css>;rel=stylesheet, </>;rel=next'
+        # httplib might return a list of csv for a header.
+        cssurilist = []
+        req = HttpRequests()
+        linkhttp = httpheadersdict['link']
+        csspathlist = req.parseHttpLink(linkhttp)
+        for i, csspath in enumerate(csspathlist):
+            cssurl = urlparse.urljoin(uri, csspath)
+            cssurilist.append(cssurl)
+        return cssurilist
 
     def getCssRules(self, uri):
         """Given the URI of a CSS file,
@@ -135,7 +152,6 @@ class Css:
         verify that the the property name for this vendor name exists
         return True"""
         expectedproperty = "-%s-%s" % (vendorname, propertyname)
-        print expectedproperty
         propertynamelist = declarationslist.keys()
         try:
             propertynamelist.index(expectedproperty)
@@ -143,8 +159,20 @@ class Css:
         except ValueError:
             return False
 
+    def hasProperty(self, propertyname, declarationslist):
+        """Given a declarationslist, a propertyname,
+        verify that the the property name exists
+        return True"""
+        propertynamelist = declarationslist.keys()
+        try:
+            propertynamelist.index(propertyname)
+            return True
+        except ValueError:
+            return False
+
 
 def main():
+    cssutils.log.setLevel(logging.FATAL)
     uc = UriCheck()
     req = HttpRequests()
     css = Css()
@@ -156,10 +184,10 @@ def main():
                 continue
             if uc.ishttpURI(uri):
                 htmltext = req.getContent(uri)
-                if css.hasStyleElement(htmltext):
-                    styleeltrule = css.getStyleElementRules(htmltext)
-                    if styleeltrule != "":
-                        logging.info("There is a style element at %s" % (uri))
+                # if css.hasStyleElement(htmltext):
+                #     styleeltrule = css.getStyleElementRules(htmltext)
+                #     if styleeltrule != "":
+                #         logging.info("There is a style element at %s" % (uri))
                 cssurislist = css.getCssUriList(htmltext, uri)
                 for cssuri in cssurislist:
                     cssruleslist = css.getCssRules(cssuri)
@@ -168,13 +196,27 @@ def main():
                             # This is a rule, we process
                             # Reminder cssrule.type == 0 -> comment
                             score = 0
-                            for declaration in cssrule.style:
+                            propertydetectedlist = []
+                            propertyname = "transition"
+                            if css.hasVendorProperty("o", propertyname, cssrule.style):
+                                propertydetectedlist.append("-%s-%s" % ("o", propertyname))
+                                score += 1
+                            if css.hasVendorProperty("webkit", propertyname, cssrule.style):
+                                propertydetectedlist.append("-%s-%s" % ("webkit", propertyname))
+                                score += 2
+                            if css.hasProperty(propertyname, cssrule.style):
+                                propertydetectedlist.append("%s" % (propertyname))
+                                score += 4
+                            if score > 0:
+                                print "SCORE: %d, LIST: %s At %s for %s, CSS: %s" % (score, propertydetectedlist, uri, propertyname, cssuri)
+                            # for declaration in cssrule.style:
+                            #     print declaration
                                 # this is the property list -> rules.style
                                 # I need to segregate each groups.
-                                if declaration.name.startswith("-webkit-"):
-                                    score = score + 1
-                                if declaration.name.startswith("-o-"):
-                                    score = score + 2
+                                # if declaration.name.startswith("-webkit-"):
+                                #     score = score + 1
+                                # if declaration.name.startswith("-o-"):
+                                #     score = score + 2
                         # if score != 0:
                         #     print score, rules.selectorText
 
