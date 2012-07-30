@@ -171,11 +171,49 @@ class Css:
             return False
 
 
+class Survey:
+    """Mother of survey modules"""
+
+    def __init__(self):
+        # TODO: Initializing the reporting output mode
+        pass
+
+    def compareCssProperties(self, vendorref, vendorcomp, propertyname, cssrule):
+        """compares how CSS properties are used and computes a score
+        vendorref  = +1
+        vendorcomp = +2
+        prefixless = +4
+
+        Example:
+        .sel {  -o-color: #fff;
+              -moz-color: #fff;
+                   color: #fff;}
+
+        will return a score of 5
+        with property = 'color', vendorref = 'o', vendorcomp = 'moz'
+        """
+        score = 0
+        propertyvendorlist = []
+        propertyvendorlist.append(propertyname)
+        css = Css()
+        if css.hasVendorProperty(vendorref, propertyname, cssrule):
+            score += 1
+            propertyvendorlist.append(vendorref)
+        if css.hasVendorProperty(vendorcomp, propertyname, cssrule):
+            score += 2
+            propertyvendorlist.append(vendorcomp)
+        if css.hasProperty(propertyname, cssrule):
+            score += 4
+            propertyvendorlist.append('prefixless')
+        return score, propertyvendorlist
+
+
 def main():
     cssutils.log.setLevel(logging.FATAL)
     uc = UriCheck()
     req = HttpRequests()
     css = Css()
+    survey = Survey()
     with open(SITELIST) as f:
         for uri in f:
             # remove leading, trailing spaces
@@ -195,31 +233,10 @@ def main():
                         if cssrule.type == 1:
                             # This is a rule, we process
                             # Reminder cssrule.type == 0 -> comment
-                            score = 0
-                            propertydetectedlist = []
-                            propertyname = "transition"
-                            if css.hasVendorProperty("o", propertyname, cssrule.style):
-                                propertydetectedlist.append("-%s-%s" % ("o", propertyname))
-                                score += 1
-                            if css.hasVendorProperty("webkit", propertyname, cssrule.style):
-                                propertydetectedlist.append("-%s-%s" % ("webkit", propertyname))
-                                score += 2
-                            if css.hasProperty(propertyname, cssrule.style):
-                                propertydetectedlist.append("%s" % (propertyname))
-                                score += 4
-                            if score > 0:
-                                print "SCORE: %d, LIST: %s At %s for %s, CSS: %s" % (score, propertydetectedlist, uri, propertyname, cssuri)
-                            # for declaration in cssrule.style:
-                            #     print declaration
-                                # this is the property list -> rules.style
-                                # I need to segregate each groups.
-                                # if declaration.name.startswith("-webkit-"):
-                                #     score = score + 1
-                                # if declaration.name.startswith("-o-"):
-                                #     score = score + 2
-                        # if score != 0:
-                        #     print score, rules.selectorText
-
+                            score, propertyresultlist = survey.compareCssProperties('o', 'webkit', 'background-color', cssrule.style)
+                            # printing only if the propertyname is found and if there is more than prefixless
+                            if score > 0 and score != 4:
+                                print propertyresultlist, uri
                     # logging.info(responseheaders)
 
 if __name__ == '__main__':
