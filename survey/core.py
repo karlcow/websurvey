@@ -221,23 +221,27 @@ def main():
             if uri.startswith("#"):
                 continue
             if uc.ishttpURI(uri):
-                htmltext = req.getContent(uri)
-                # if css.hasStyleElement(htmltext):
-                #     styleeltrule = css.getStyleElementRules(htmltext)
-                #     if styleeltrule != "":
-                #         logging.info("There is a style element at %s" % (uri))
-                cssurislist = css.getCssUriList(htmltext, uri)
-                for cssuri in cssurislist:
-                    cssruleslist = css.getCssRules(cssuri)
-                    for cssrule in cssruleslist:
-                        if cssrule.type == 1:
-                            # This is a rule, we process
-                            # Reminder cssrule.type == 0 -> comment
-                            score, propertyresultlist = survey.compareCssProperties('o', 'webkit', 'background-color', cssrule.style)
-                            # printing only if the propertyname is found and if there is more than prefixless
-                            if score > 0 and score != 4:
-                                print propertyresultlist, uri
-                    # logging.info(responseheaders)
+                try:
+                    htmltext = req.getContent(uri)
+                    # if css.hasStyleElement(htmltext):
+                    #     styleeltrule = css.getStyleElementRules(htmltext)
+                    #     if styleeltrule != "":
+                    #         logging.info("There is a style element at %s" % (uri))
+                    cssurislist = css.getCssUriList(htmltext, uri)
+                    for cssuri in cssurislist:
+                        cssruleslist = css.getCssRules(cssuri)
+                        for cssrule in cssruleslist:
+                            if cssrule.type == 1:
+                                # This is a rule, we process
+                                # Reminder cssrule.type == 0 -> comment
+                                score, propertyresultlist = survey.compareCssProperties('o', 'webkit', 'background-color', cssrule.style)
+                                # printing only if the propertyname is found and if there is more than prefixless
+                                if score > 0 and score != 4:
+                                    print propertyresultlist, uri
+                        # logging.info(responseheaders)
+                except requests.exceptions.ConnectionError as e:
+                    # we are catching network connection error and record them.
+                    logging.info("Connection error: %s" % (e.message))
 
 if __name__ == '__main__':
     main()
