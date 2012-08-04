@@ -60,12 +60,6 @@ class HttpRequests:
         history = r.history
         return statuscode, responseheaders, history
 
-    def compareUriContent(self, uri1, uri2):
-        """Given two URIs,
-        compare if the content is the same."""
-        # Useful when evolution along a parameter (time, uastring, etc.)
-        pass
-
     def getContent(self, uri, useragentstring):
         """Return the content associated with an uri"""
         headers = {'User-Agent': useragentstring}
