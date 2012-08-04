@@ -37,31 +37,6 @@ class UriCheckTests(unittest.TestCase):
         self.assertTrue(gooduri.ishttpURI(httpuristart))
 
 
-class HttpRequestsTests(unittest.TestCase):
-    """Tests for HTTP"""
-
-    def setUp(self):
-        self.req = core.HttpRequests()
-
-    def tearDown(self):
-        self.req = None
-
-    def testGetRequestStatus4xx(self):
-        "Check if we advertise the right message when 4xx"
-        pass
-
-    def testGetRequestLocation(self):
-        "Check if we grab the right location when there is a redirection"
-        pass
-
-    def testParseHttpLink(self):
-        "take the csv list from http link header and return a dictionary"
-        httpheader = '</path/style.css>;rel=stylesheet, </>;rel=next'
-        expected = {'stylesheet': '/path/style.css', 'next': '/'}
-        actual = self.req.parseHttpLink(httpheader)
-        self.assertDictEqual(expected, actual)
-
-
 class CssTests(unittest.TestCase):
     """Tests for CSS requests"""
 
