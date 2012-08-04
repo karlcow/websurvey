@@ -240,9 +240,10 @@ def main():
         logging.info("START - %s with %s" % (datetime.today().isoformat(), UAREF))
         for uri in f:
             # remove leading, trailing spaces
-            uri = uri.strip()
             if uri.startswith("#"):
                 continue
+            uri = uri.strip()
+            logging.info("SITE: %s" % (uri))
             if uc.ishttpURI(uri):
                 try:
                     htmltext = req.getContent(uri)
