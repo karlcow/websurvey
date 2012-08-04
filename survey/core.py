@@ -15,6 +15,7 @@ from lxml import etree
 import cssutils
 import os.path
 import logging
+from datetime import datetime
 
 # CONSTANT - ALL OF THESE will have to be passed as arguements.
 # List of URIs, 1 URI by line
@@ -236,6 +237,7 @@ def main():
     req = HttpRequests()
     css = Css()
     survey = Survey()
+    propertytocheck = ['transition', 'transform', 'animation']
     with open(SITELIST) as f:
         logging.info("START - %s with %s" % (datetime.today().isoformat(), UAREF))
         for uri in f:
@@ -246,23 +248,44 @@ def main():
             logging.info("SITE: %s" % (uri))
             if uc.ishttpURI(uri):
                 try:
-                    htmltext = req.getContent(uri)
-                    # if css.hasStyleElement(htmltext):
-                    #     styleeltrule = css.getStyleElementRules(htmltext)
-                    #     if styleeltrule != "":
-                    #         logging.info("There is a style element at %s" % (uri))
+                    htmltext = req.getContent(uri, UAREF)
+                    if css.hasStyleElement(htmltext):
+                        styleeltrule = css.getStyleElementRules(htmltext)
+                        if styleeltrule != "":
+                            logging.info("Style Element at %s" % (uri))
+                            for cssrule in styleeltrule:
+                                if cssrule.type == 1:
+                                    for i, propertyname in enumerate(propertytocheck):
+                                        score, propertyresultlist = survey.compareCssProperties('o', 'webkit', propertyname, cssrule.style)
+                                        # printing only if the propertyname is found and if there is more than prefixless
+                                        if score > 0 and score != 4:
+                                            print propertyresultlist, uri
+
                     cssurislist = css.getCssUriList(htmltext, uri)
+                    if len(cssurislist) == 0:
+                        logging.info("NO CSS LINK REL at %s" % (uri))
+                    else:
+                        logging.info("CSS LINK REL: %s at %s" % (len(cssurislist), uri))
+
                     for cssuri in cssurislist:
                         cssruleslist = css.getCssRules(cssuri)
+                        try:
+                            cssruleslist = css.getCssRules(cssuri)
+                        except ValueError as e:
+                            logging.info("CSS Mime Type error: %s" % (e.message))
                         for cssrule in cssruleslist:
                             if cssrule.type == 1:
                                 # This is a rule, we process
                                 # Reminder cssrule.type == 0 -> comment
-                                score, propertyresultlist = survey.compareCssProperties('o', 'webkit', 'background-color', cssrule.style)
-                                # printing only if the propertyname is found and if there is more than prefixless
-                                if score > 0 and score != 4:
-                                    print propertyresultlist, uri
+                                for i, propertyname in enumerate(propertytocheck):
+                                    score, propertyresultlist = survey.compareCssProperties('o', 'webkit', propertyname, cssrule.style)
+                                    # printing only if the propertyname is found and if there is more than prefixless
+                                    # if score > 0 and score != 4:
+                                    if score > 0:
+                                        print uri, propertyresultlist
+                                        logging.info("SURVEY: %s %s" % (uri, propertyresultlist))
                         # logging.info(responseheaders)
+
                 except requests.exceptions.ConnectionError as e:
                     # we are catching network connection error and record them.
                     logging.info("Connection error: %s" % (e.message))
