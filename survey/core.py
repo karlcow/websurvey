@@ -237,6 +237,7 @@ def main():
     css = Css()
     survey = Survey()
     with open(SITELIST) as f:
+        logging.info("START - %s with %s" % (datetime.today().isoformat(), UAREF))
         for uri in f:
             # remove leading, trailing spaces
             uri = uri.strip()
