@@ -146,17 +146,27 @@ class Css:
 
     def getStyleElementRules(self, htmltext):
         """Given an htmltext,
-        let's return the CSS rules contained in the content"""
+        return the CSS rules contained in the content"""
         compiledstyle = ""
+        stylesheet = cssutils.css.CSSStyleSheet()
         tree = etree.HTML(htmltext)
         styleelements = tree.xpath('//style')
         for styleelt in styleelements:
-            compiledstyle = compiledstyle + styleelt.text
-        cssutils.ser.prefs.indentClosingBrace = False
-        cssutils.ser.prefs.keepComments = False
-        cssutils.ser.prefs.lineSeparator = u''
-        cssutils.ser.prefs.omitLastSemicolon = False
-        stylesheet = cssutils.parseString(compiledstyle)
+            if styleelt.text != None:
+                compiledstyle = compiledstyle + styleelt.text
+            else:
+                logging.debug("STYLE ELEMENT %s on %s" % (styleelements.index(styleelt) + 1, len(styleelements)))
+        if compiledstyle != None:
+            cssutils.ser.prefs.indentClosingBrace = False
+            cssutils.ser.prefs.keepComments = False
+            cssutils.ser.prefs.lineSeparator = u''
+            cssutils.ser.prefs.omitLastSemicolon = False
+            try:
+                stylesheet = cssutils.parseString(compiledstyle)
+            except ValueError as e:
+                logging.info("BOGUS STYLE RULE: %s" % (e.message))
+        else:
+            raise ValueError("STYLE ELEMENT: no CSS Rules")
         return stylesheet
 
     def hasVendorProperty(self, vendorname, propertyname, declarationslist):
