@@ -120,9 +120,18 @@ class Css:
         """Given the URI of a CSS file,
         return the list of all CSS rules,
         including all the imports."""
+        IMPORT_FLAG = False
         stylesheet = cssutils.parseUrl(uri)
-        stylesheet = cssutils.resolveImports(stylesheet)
-        return stylesheet
+        # Check if there is an import rule in the CSS
+        for cssrule in stylesheet:
+            if cssrule.type == 3:
+                IMPORT_FLAG = True
+        # ResolveImports only if there is a rule
+        if IMPORT_FLAG:
+            stylesheet2 = cssutils.resolveImports(stylesheet)
+        else:
+            stylesheet2 = stylesheet
+        return stylesheet2
 
     def hasStyleElement(self, htmltext):
         """Given an htmltext,
