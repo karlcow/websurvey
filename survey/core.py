@@ -72,18 +72,6 @@ class HttpRequests:
         r = requests.get(uri, headers=headers)
         return r.text
 
-    def parseHttpLink(self, linkhttpheader):
-        """Link HTTP headers are a CSV list
-        Link: <uri>; rel=next, <uri2>; rel=stylesheet
-        {'next': 'uri', 'stylesheet': 'uri2'}
-        TODO check the spec on Web Linking"""
-        httplinkdict = {}
-        linkitems = str.split(linkhttpheader, ',')
-        for linkitem in linkitems:
-            value = str.split(linkitem, ';')
-            httplinkdict[value[0]] = value[1]
-        return httplinkdict
-
 
 class Css:
     """Grabing All CSS for one given URI"""
