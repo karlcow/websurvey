@@ -68,16 +68,6 @@ class CssTests(unittest.TestCase):
         expected.sort()
         self.assertListEqual(expected, actual)
 
-    def testUriCssHttp(self):
-        "For a given set of HTTP headers, is there an HTTP Link header for CSS"
-        WebSiteUri = "http://example.org/"
-        http_input = {'content-length': '1162', 'date': 'Thu, 19 Jul 2012 19:16:43 GMT', 'content-type': 'text/html; charset=utf-8', 'server': 'Apache/2.2.21', 'link': 'http://example.org/css/style.css;rel=stylesheet'}
-        expected = ['http://example.org/css/style.css']
-        actual = self.css.getCssHttpUriList(http_input, WebSiteUri)
-        actual.sort()
-        expected.sort()
-        self.assertListEqual(expected, actual)
-
     def testRulesList(self):
         "for a given CSS do we list the right list of rules"
         pass
