@@ -1,3 +1,131 @@
+ 9252  grep "SURVEY"  ~/Documents/2011/github.org/websurvey/log_filename.txt | sed 's/^.*SURVEY: //' | sort | uniq -c
+ 9254  grep "SURVEY"  ~/Documents/2011/github.org/websurvey/log_filename.txt | sed 's/^.*SURVEY: //' | sort | uniq -c | grep -v "'o'"
+ 9255  grep "SURVEY"  ~/Documents/2011/github.org/websurvey/log_filename.txt | sed 's/^.*SURVEY: //' | sort | uniq -c | grep -v "'o'" | grep -v prefixless
+ 9262  grep "SURVEY"  ~/Documents/2011/github.org/websurvey/log_filename.txt | sed 's/^.*SURVEY: //' | sort | awk '{print $1}' | wc -l
+ 9263  grep "SURVEY"  ~/Documents/2011/github.org/websurvey/log_filename.txt | sed 's/^.*SURVEY: //' | sort | awk '{print $1}' | uniq -c
+ 9264  grep "SURVEY"  ~/Documents/2011/github.org/websurvey/log_filename.txt | sed 's/^.*SURVEY: //' | sort | awk '{print $1}' | uniq -c | wc -l
+ 9266  grep STYLE  ~/Documents/2011/github.org/websurvey/log_filename.txt
+ 9267  grep LINK  ~/Documents/2011/github.org/websurvey/log_filename.txt
+ 9268  grep "NO CSS LINK"  ~/Documents/2011/github.org/websurvey/log_filename.txt
+ 9269  grep "NO CSS LINK"  ~/Documents/2011/github.org/websurvey/log_filename.txt |wc -l
+ 9270  grep "NO CSS LINK"  ~/Documents/2011/github.org/websurvey/log_filename.txt | grep google
+ 9271  grep "NO CSS LINK"  ~/Documents/2011/github.org/websurvey/log_filename.txt | grep google | wc -l
+ 9278  grep "LINK"  ~/Documents/2011/github.org/websurvey/log_filename.txt | grep -v "NO CSS LINK" | sed -e 's/.*INFO - CSS //' | sed -e 's/ at h.*//'
+ 9279  grep "LINK"  ~/Documents/2011/github.org/websurvey/log_filename.txt | grep -v "NO CSS LINK" | sed -e 's/.*INFO - CSS //' | sed -e 's/ at h.*//' | sort
+ 9280  grep "LINK"  ~/Documents/2011/github.org/websurvey/log_filename.txt | grep -v "NO CSS LINK" | sed -e 's/.*INFO - CSS //' | sed -e 's/ at h.*//' | sort | uniq -c
+ 9281  grep "LINK"  ~/Documents/2011/github.org/websurvey/log_filename.txt | grep -v "NO CSS LINK" | sed -e 's/.*INFO - CSS //' | sed -e 's/ at h.*//' | sort 
+ 9282  grep "LINK"  ~/Documents/2011/github.org/websurvey/log_filename.txt | grep -v "NO CSS LINK" | sed -e 's/.*INFO - CSS //' 
+ 9284  mv  ~/Documents/2011/github.org/websurvey/log_filename.txt  ~/Documents/2011/github.org/websurvey/log_filename-2012-08-03-opera-dsk.txt
+
+
+
+Traceback (most recent call last):
+  File "survey/core.py", line 293, in <module>
+    main()
+  File "survey/core.py", line 251, in main
+    if css.hasStyleElement(htmltext):
+  File "survey/core.py", line 140, in hasStyleElement
+    tree = etree.HTML(htmltext)
+  File "lxml.etree.pyx", line 2708, in lxml.etree.HTML (src/lxml/lxml.etree.c:54160)
+  File "parser.pxi", line 1569, in lxml.etree._parseMemoryDocument (src/lxml/lxml.etree.c:82685)
+ValueError: Unicode strings with encoding declaration are not supported.
+
+2012-08-04 06:36:35,025 - INFO - SITE: http://yahoo.com/
+2012-08-04 06:36:35,121 - INFO - Starting new HTTP connection (1): yahoo.com
+2012-08-04 06:36:35,318 - DEBUG - "GET / HTTP/1.1" 301 None
+2012-08-04 06:36:35,319 - INFO - Starting new HTTP connection (1): www.yahoo.com
+2012-08-04 06:36:35,793 - DEBUG - "GET / HTTP/1.1" 302 None
+2012-08-04 06:36:35,795 - INFO - Starting new HTTP connection (1): m.yahoo.com
+2012-08-04 06:36:38,531 - DEBUG - "GET /?.tsrc=yahoo&mobile_view_default=true HTTP/1.1" 200 None
+http://google.ru/
+
+
+
+['transition', 'o', 'webkit', 'prefixless'] http://vk.com/
+Traceback (most recent call last):
+  File "survey/core.py", line 256, in <module>
+    main()
+  File "survey/core.py", line 241, in main
+    for cssrule in cssruleslist:
+TypeError: 'NoneType' object is not iterable
+
+
+
+# TO CHECK it seems that if I parse an import, I will parse it a few times for each CSS calling it.
+
+
+# TEST for the style element and then do the right mixin.
+
+Traceback (most recent call last):
+  File "survey/core.py", line 227, in <module>
+    main()
+  File "survey/core.py", line 188, in main
+    styleeltrule = css.getStyleElementRules(htmltext)
+  File "survey/core.py", line 142, in getStyleElementRules
+    compiledstyle = compiledstyle + styleelt.text
+TypeError: cannot concatenate 'str' and 'NoneType' objects
+
+
+# TEST for cssurilist returns NONE so nothing to explore and then continue.
+
+Traceback (most recent call last):
+  File "survey/core.py", line 226, in <module>
+    main()
+  File "survey/core.py", line 193, in main
+    cssruleslist = css.getCssRules(cssuri)
+  File "survey/core.py", line 121, in getCssRules
+    stylesheet = cssutils.resolveImports(stylesheet)
+  File "/Library/Python/2.7/site-packages/cssutils/__init__.py", line 285, in resolveImports
+    target = css.CSSStyleSheet(href=sheet.href,
+AttributeError: 'NoneType' object has no attribute 'href'
+
+
+
+PSEUDO LOGIC for the code.
+
+
+# Test 0:
+ * test HTTP answer. Network done. 
+ * swallow all stylesheet URIs in a table with their URI of origin
+   (what about import rules…). Needs a real spider here. not just HTTP GET on the home page.
+
+# Test 1:
+
+Is the Web site sending the same stylesheet to Opera and Webkit. If different stylesheets, we have to remove them from the survey.
+
+for uri in uriList:
+ do HTTP GET with userAgent == Webkit
+    Save webkitfile
+ do HTTP GET with userAgent == Opera
+    Save operafile
+ diff webkit operafile
+
+Issue the different stylesheet might be sent during test 0.
+
+
+# Test 2:
+
+foreach cssURI:
+   for selectorGroup in cssRules:
+	score = 0
+	// separate in 3 independent checks
+	if declarationNameList contains (
+		-webkit-transform, 
+		-webkit-transition, 
+		-webkit-animation):
+		score =+ 1
+	    check if unprefixed is here
+		score =+ 2
+	    check if -o- is here
+		score =+ 4
+
+if score = 1, there are webkit rules only
+if score = 3, webkit + unprefix
+if score = 7, webkit + unprefix + opera
+if score = 5, webkit + opera
+
+
+=================================================================================
 # STEPS
 
 ## Read the top URI of urilist.txt -> webSiteUri
@@ -31,6 +159,33 @@
 ## Go to Next URI
 
 
+------------------------------------------------------------------
+From CSS 2.1 spec:
+>A CSS rule consists of two main parts: selector ('h1') and declaration ('color: red'). In HTML, element names are case-insensitive so 'h1' works just as well as 'H1'. The declaration has two parts: property name ('color') and property value ('red'). 
+
+In the code change the variable to be in line with the spec, less confusing.
+
+stylesheetlist = [stylesheet,]
+	stylesheet:
+		uri
+		media
+		ruleslist = [rule,]
+			rule:
+				selectorlist = [selector,]                        # h1, .foo
+					selector:
+						declarationlist = [declaration,]          # color: red; border: 1px black solid;
+							declaration:
+								propertyname: propertyvalue       # color: red;
+------------------------------------------------------------------
+
+htmltext = content
+cssuri   = uri of the css
+htmluri  = uri of the content
+cssmedia = print, screen, handheld
+
+
+
+
 
     # TESTURI = 'http://lagrange.test.site/tmp/toto.html'
     # req = HttpRequests()
@@ -44,3 +199,6 @@
     #     rules = (rule for rule in stylesheet if rule.type == rule.STYLE_RULE)
     #     for rule in rules:
     #         print rule.cssText
+
+
+
