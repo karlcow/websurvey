@@ -66,9 +66,10 @@ class HttpRequests:
         # Useful when evolution along a parameter (time, uastring, etc.)
         pass
 
-    def getContent(self, uri):
+    def getContent(self, uri, useragentstring):
         """Return the content associated with an uri"""
-        r = requests.get(uri)
+        headers = {'User-Agent': useragentstring}
+        r = requests.get(uri, headers=headers)
         return r.text
 
     def parseHttpLink(self, linkhttpheader):
