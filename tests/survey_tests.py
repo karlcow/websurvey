@@ -68,10 +68,6 @@ class CssTests(unittest.TestCase):
         expected.sort()
         self.assertListEqual(expected, actual)
 
-    def testRulesList(self):
-        "for a given CSS do we list the right list of rules"
-        pass
-
     def testHasStyleElement(self):
         "for a given URI, there a style element. return True."
         content = "<!doctype><html><head><title>foo</title><style>.foo {color: #fff;}</style></head><body>foo</body></html>"
