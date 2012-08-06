@@ -65,7 +65,21 @@ class HttpRequests:
         """Return the content associated with an uri"""
         headers = {'User-Agent': useragentstring}
         r = requests.get(uri, headers=headers)
-        return r.text
+        responsetext = r.text
+        # first test if it's a string
+        try:
+            isinstance(responsetext, basestring)
+        # Log type errors
+        except TypeError as e:
+            logging.debug("HTMLTEXT - %s" % (e.message))
+        else:
+            # then test if it's unicode and convert it
+            if isinstance(responsetext, unicode):
+                htmltext = responsetext.encode('utf-8')
+            # or if not it is just the common text
+            elif isinstance(responsetext, str):
+                htmltext = responsetext
+        return htmltext
 
 
 class Css:
