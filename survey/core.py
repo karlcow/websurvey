@@ -19,7 +19,7 @@ from datetime import datetime
 
 # CONSTANT - ALL OF THESE will have to be passed as arguements.
 # List of URIs, 1 URI by line
-#SITELIST = os.path.dirname(__file__) + "/../tests/urlist-top100.data"
+# SITELIST = os.path.dirname(__file__) + "/../tests/urlist-top100.data"
 SITELIST = os.path.dirname(__file__) + "/../tests/urlist.data"
 # UAREF = "Opera/9.80 (Macintosh; Intel Mac OS X 10.8.0) Presto/2.12.363 Version/12.50"
 UAREF = "Opera/9.80 (Android 2.3.5; Linux; Opera Mobi/ADR-1202082305; U; en) Presto/2.10.254 Version/12.00"
@@ -122,12 +122,10 @@ class Css:
         including all the imports."""
         IMPORT_FLAG = False
         stylesheet = ""
-        try:
-            stylesheet = cssutils.parseUrl(uri)
-        except urllib2.HTTPError as e:
-            # Dealing with HTTP errors
-            logging.info("CSS URI ERROR - %s %s at %s " % (e.code, e.msg, e.url))
-        # Check if there is an import rule in the CSS
+        # requests is more robust for encoding errors
+        headers = {'User-Agent': UAREF}
+        r = requests.get(uri, headers=headers)
+        stylesheet = cssutils.parseString(r.text)
         for cssrule in stylesheet:
             if cssrule.type == 3:
                 IMPORT_FLAG = True
@@ -272,7 +270,6 @@ def main():
                         logging.info("NO CSS LINK REL at %s" % (finaluri))
                     else:
                         logging.info("CSS LINK REL: %s at %s" % (len(cssurislist), finaluri))
-
                     for cssuri in cssurislist:
                         cssruleslist = css.getCssRules(cssuri)
                         try:
