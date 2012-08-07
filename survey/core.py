@@ -245,10 +245,12 @@ def main():
     with open(SITELIST) as f:
         logging.info("START - %s with %s" % (datetime.today().isoformat(), UAREF))
         for uri in f:
-            # remove leading, trailing spaces
+            uri = uri.strip()
+           # remove leading, trailing spaces
             if uri.startswith("#"):
                 continue
-            uri = uri.strip()
+            elif uri == '':
+                continue
             logging.info("SITE: %s" % (uri))
             if uc.ishttpURI(uri):
                 try:
