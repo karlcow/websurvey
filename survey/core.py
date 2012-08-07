@@ -65,6 +65,9 @@ class HttpRequests:
         """Return the content associated with an uri"""
         headers = {'User-Agent': useragentstring}
         r = requests.get(uri, headers=headers)
+        # r.history contains a list of the different redirections
+        # if needed later.
+        finaluri = r.url
         responsetext = r.text
         # first test if it's a string
         try:
@@ -79,7 +82,7 @@ class HttpRequests:
             # or if not it is just the common text
             elif isinstance(responsetext, str):
                 htmltext = responsetext
-        return htmltext
+        return htmltext, finaluri
 
 
 class Css:
