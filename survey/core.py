@@ -121,7 +121,12 @@ class Css:
         return the list of all CSS rules,
         including all the imports."""
         IMPORT_FLAG = False
-        stylesheet = cssutils.parseUrl(uri)
+        stylesheet = ""
+        try:
+            stylesheet = cssutils.parseUrl(uri)
+        except urllib2.HTTPError as e:
+            # Dealing with HTTP errors
+            logging.info("CSS URI ERROR - %s %s at %s " % (e.code, e.msg, e.url))
         # Check if there is an import rule in the CSS
         for cssrule in stylesheet:
             if cssrule.type == 3:
