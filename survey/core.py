@@ -254,24 +254,24 @@ def main():
             logging.info("SITE: %s" % (uri))
             if uc.ishttpURI(uri):
                 try:
-                    htmltext = req.getContent(uri, UAREF)
+                    htmltext, finaluri = req.getContent(uri, UAREF)
                     if css.hasStyleElement(htmltext):
                         styleeltrule = css.getStyleElementRules(htmltext)
                         if styleeltrule != "":
-                            logging.info("Style Element at %s" % (uri))
+                            logging.info("Style Element at %s" % (finaluri))
                             for cssrule in styleeltrule:
                                 if cssrule.type == 1:
                                     for i, propertyname in enumerate(propertytocheck):
                                         score, propertyresultlist = survey.compareCssProperties('o', 'webkit', propertyname, cssrule.style)
                                         # printing only if the propertyname is found and if there is more than prefixless
                                         if score > 0 and score != 4:
-                                            print propertyresultlist, uri
+                                            print propertyresultlist, finaluri
 
-                    cssurislist = css.getCssUriList(htmltext, uri)
+                    cssurislist = css.getCssUriList(htmltext, finaluri)
                     if len(cssurislist) == 0:
-                        logging.info("NO CSS LINK REL at %s" % (uri))
+                        logging.info("NO CSS LINK REL at %s" % (finaluri))
                     else:
-                        logging.info("CSS LINK REL: %s at %s" % (len(cssurislist), uri))
+                        logging.info("CSS LINK REL: %s at %s" % (len(cssurislist), finaluri))
 
                     for cssuri in cssurislist:
                         cssruleslist = css.getCssRules(cssuri)
@@ -288,8 +288,8 @@ def main():
                                     # printing only if the propertyname is found and if there is more than prefixless
                                     # if score > 0 and score != 4:
                                     if score > 0:
-                                        print uri, propertyresultlist
-                                        logging.info("SURVEY: %s %s" % (uri, propertyresultlist))
+                                        print finaluri, propertyresultlist
+                                        logging.info("SURVEY: %s %s" % (finaluri, propertyresultlist))
                         # logging.info(responseheaders)
 
                 except requests.exceptions.ConnectionError as e:
