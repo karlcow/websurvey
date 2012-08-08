@@ -295,10 +295,12 @@ def main():
                                 # Reminder cssrule.type == 0 -> comment
                                 for i, propertyname in enumerate(propertytocheck):
                                     score, propertyresultlist = survey.compareCssProperties('o', 'webkit', propertyname, cssrule.style)
+                                    propertyfulllist = survey.getVendorPrefixes(propertyname, cssrule.style)
                                     # printing only if the propertyname is found and if there is more than prefixless
                                     # if score > 0 and score != 4:
                                     if score > 0:
-                                        print finaluri, propertyresultlist
+                                        # print finaluri, propertyresultlist
+                                        print finaluri, propertyfulllist
                                         logging.info("SURVEY: %s %s" % (finaluri, propertyresultlist))
                         # logging.info(responseheaders)
 
