@@ -1,0 +1,192 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Opera - Vendor Prefixes Report for CSS animation, transform, transition, background-size</title>
+    <link rel="stylesheet" href="http://www.la-grange.net/style/simple.css">
+    <style>
+    table {font-size: .8rem;
+        border-collapse:collapse;
+        border-spacing:0;
+        margin: 1rem 0;
+        width:auto;}
+    caption,th {text-align:left;}
+    caption {
+    line-height: 1rem;
+    padding: .5rem 1rem;
+    border-top: 1px solid #999999;}
+
+    thead th {    line-height: 1rem;
+    padding: .5rem 1rem;
+    color: eee;
+    text-align:center;
+}
+    tbody th {
+    line-height: 1rem;
+    padding: .5rem 1rem;
+    background-color: #eee;
+    color: eee;
+    text-align:center;
+    }
+    td {font-family:  sans-serif;
+    padding: .5rem 1rem;
+    text-align:left}
+    tbody {background-color: rgb(245,245,245);}
+
+    body {margin-bottom:200px;}
+    footer {
+        width:100%;
+        position: fixed;
+        bottom:0;
+        left:0;
+        background-color: rgb(245,245,245);
+        padding: 1rem;}
+    </style>
+</head>
+<body>
+
+<h1 id="Intro">Opera - Vendor Prefixes Report for CSS animation, transform, transition, background-size</h1>
+
+<p>To assess the damages that CSS vendor prefixes could create on Opera Browser, we have created a script which is looking at the type of CSS used for certain properties. This survey has been ran by <a href="http://www.la-grange.net/karl/">Karl Dubost</a> (twitter: <a href="http://twitter.com/karlpro">@karlpro</a>) for <a href="http://dev.opera.com/">Opera Developer Relations</a> on August 2012.</p>
+
+<h2 id="sample">Data Sample</h2>
+
+<p>We used the list of top 1000 sites given by Alexa (2012-07-30) extracted from the top 1 million sites. Alexa is giving a list of domain names only.</p>
+
+<pre>970,opera.com</pre>
+
+<p>We applied a transformation, so we get an URI to process. Obviously the main Web site will sometimes be different. See the section on <a href="#caveat-redir">caveats</a></p>
+
+<pre>http://opera.com/</pre>
+
+<h2 id="user-agent">User Agents Strings</h2>
+
+<p>We used two user agent strings and ran the survey twice to assess if the results are different.</p>
+
+<p>For Opera desktop</p>
+<pre>"Opera/9.80 (Macintosh; Intel Mac OS X 10.8.0) Presto/2.12.363 Version/12.50"</pre>
+<p>For Opera Mobile</p>
+<pre>Opera/9.80 (Android 2.3.5; Linux; Opera Mobi/ADR-1202082305; U; en) Presto/2.10.254 Version/12.00</pre>
+
+
+<h2 id="caveat">Python Script Caveats and Limitations</h2>
+
+<p>The script has certain flaws. It uses three external libraries: Requests, lxml, cssutils and the script in addition to its own bugs might be dependent on the bugs of these libraries.</p>
+
+<h3 id="caveat-perf">Performances</h3>
+
+<p>The script is not really fast. And there are certainly issues to address if we wanted to process a larger volume of data. The sample of 1000 sites took around 7 hours and 22 minutes (442 minutes). So we have processed 1 site every 26.52s (as a mean). Some sites takes longer than others.</p>
+
+<ul>
+    <li>Initial HTTP request</li>
+    <li>HTTP redirections</li>
+    <li>Connections failed</li>
+    <li>HTML Parsing</li>
+    <li>CSS Parsing</li>
+    <li>The code itself</li>
+</ul>
+
+<p>We could probably improve the performances of the script by first downloading all the resources locally and then analyzing them locally. It's a path to explore for future versions. That would greatly help for running stats on the same sample of data.</p>
+
+<h3 id="caveat-sample">Sample and Countries</h3>
+
+<p>Alexa has domains from different countries, but it is not necessary representative of the local sites used for each countries. This is important when adressing specific local market shares. It is usually hard to have a good overview for each countries. So in this report, we are not trying to address this aspect of the data.</p>
+
+<h3 id="caveat-redir">Redirections</h3>
+
+<p>Because we are starting with an URL, which is based on the domain name, some sites will redirect the HTTP requests according to the user agent. For example, for the Opera domain, we access first <code>http://opera.com/</code> then <code>http://www.opera.com/</code>. When accessing with the mobile user agent, we get additional redirections for certains sites such as sfgate</p>
+
+<pre>
+Starting new HTTP connection (1): sfgate.com
+"GET / HTTP/1.1" 302 235
+Starting new HTTP connection (1): www.sfgate.com
+"GET / HTTP/1.1" 302 39
+Starting new HTTP connection (1): m.sfgate.com
+"GET / HTTP/1.1" 302 0
+"GET /sfchron/index.htm HTTP/1.1" 200 None
+</pre>
+
+<p>The script is interacting at the HTTP layer and doesn't have a JavaScript interpreter. So all sites which are dependent on JavaScript for redirecting the browser have not been working accordingly to the intent of the owner. It can be difficult to assess that either the Web site has a separate mobile site without redirection, if the redirection was made only through JavaScript or if the Web site has no separate site (be only desktop or dealing with mediaqueries for the user experience on mobile).</p>
+
+<h3 id="caveat-css">Type of CSS</h3>
+
+<p>We parsed only CSS which were set through a <code>style</code> element or a <code>link rel</code> element. We did not take into consideration styles set through the <code>style</code> attribute or through JavaScript.</p>
+
+<h1 id="survey">Survey Results</h1>
+<h2 id="linkrel">CSS types frequency</h2>
+
+<p>Usually high traffic Web sites try to keep the number of HTTP requests to a minimum, because the time an HTTP request takes to be completed has an important cost on overall performance of the Web site. Because we were requesting the Web sites CSS URLs, we took the opportunity to count them.</p>
+
+<table>
+    <caption>Distribution of number of sites with stylesheets (<code>link rel</code>)</caption>
+    <thead>
+        <tr>
+            <th>link rel</th>
+            <td>0</td>
+            <td>1</td>
+            <td>2</td>
+            <td>3</td>
+            <td>4</td>
+            <td>5</td>
+            <td>6</td>
+            <td>7</td>
+            <td>8</td>
+            <td>9</td>
+            <td>10</td>
+            <td>11</td>
+            <td>12 to 22</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="desktop">
+            <th>Desktop</th>
+            <td>187</td>
+            <td>266</td>
+            <td>202</td>
+            <td>114</td>
+            <td>69</td>
+            <td>40</td>
+            <td>26</td>
+            <td>14</td>
+            <td>14</td>
+            <td>13</td>
+            <td>4</td>
+            <td>8</td>
+            <td>0 to 2</td>
+        </tr>
+        <tr class="mobile">
+            <th>Mobile</th>
+            <td>262</td>
+            <td>295</td>
+            <td>188</td>
+            <td>85</td>
+            <td>53</td>
+            <td>27</td>
+            <td>14</td>
+            <td>13</td>
+            <td>6</td>
+            <td>8</td>
+            <td>3</td>
+            <td>4</td>
+            <td>0 to 2</td>
+        </tr>
+    </tbody>
+</table>
+
+<ol class="note">
+<li>Rank Alexa 73:  http://www.adobe.com/ has 10 link rel</li>
+<li>Rank Alexa 74:  http://www.rakuten.co.jp/ has 16 link rel</li>
+<li>Rank Alexa 744: http://www.alarabiya.net/ has 22 link rel.</li>
+</ol>
+
+<p>On the Desktop survey, among the 1000 sites, 492 Web sites were using one or more <code>style</code> elements. On Mobile, 455 Web sites.</p>
+
+<footer>
+<address><a href="http://www.la-grange.net/karl/">Karl Dubost</a> (twitter: <a href="http://twitter.com/karlpro">@karlpro</a>)</address>
+<p class="date">14 August 2012</p>
+<p id="license" class="info">
+This Opera Software document is licensed under a
+<a href="http://creativecommons.org/licenses/by/3.0/" rel="license">Creative Commons Attribution 3.0 Unported</a> license.</p>
+</footer>
+</body>
+</html>
