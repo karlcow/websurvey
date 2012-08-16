@@ -272,7 +272,8 @@ def main():
                     if css.hasStyleElement(htmltext):
                         styleeltrule = css.getStyleElementRules(htmltext)
                         if styleeltrule != "":
-                            logging.info("Style Element at %s" % (finaluri))
+                            logging.info("STYLE ELEMENT at %s" % (finaluri))
+                            logging.info("STYLE ELEMENT SIZE: %s at %s" % (len(styleeltrule.cssText), finaluri))
                             for cssrule in styleeltrule:
                                 if cssrule.type == 1:
                                     for i, propertyname in enumerate(propertytocheck):
