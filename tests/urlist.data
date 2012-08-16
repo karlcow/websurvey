@@ -1,9 +1,13 @@
 # The list of URIs to be processed by the python code
+# These ones are collected because they created issues at a point.
 # UTF-8 format
-#http://googleusercontent.com/
-#http://www.opera.com/
-#http://dev.opera.com/
-#http://www.w3.org/
-#http://ovi.com/
-http://lagrange.test.site/2012/07/26/csstests/foo
-http://lagrange.test.site/
+# Rakuten and link rel
+http://rakuten.co.jp/
+# XML Declaration issue with encoding with mobile UA string
+http://yahoo.com/
+# HTTP 404 Error when fetching the CSS with mobile UA string
+http://vk.com/
+# Sohu
+http://sohu.com/
+# Site non existent
+http://googleusercontent.com/
