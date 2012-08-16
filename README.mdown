@@ -1,3 +1,14 @@
+# Vendor prefixes on the Web
+
+A [CSS vendor prefix](http://wiki.csswg.org/spec/vendor-prefixes), such as '-o-' for [Opera browser](http://www.opera.com/browser/), indicates a property or value in CSS which has been implemented in the browser but is not considered stable yet. The feature is declared stable by the implementers participating to the [W3C CSS WG](http://www.w3.org/Style/CSS/).
+
+Web developers are using CSS features which are not yet stable in their Web design. It leads to valuable input for implementers but it also creates a lot of secondary issues when these Web sites are not updated when browsers evolve. Because of the economic infrastructure of Web design agencies, Web sites which have been put in production are often not "fixed" for the release of new CSS properties. Some Web developers also ignore completely the minimal fallback of the prefixless property that would kick in once the property has been declared stable.
+
+It led to a situation where some end users have a broken experience on some Web sites. Unfortunately, it is very hard to get these Web sites fixed even if asked by the users and/or the browsers companies themselves. Opera has released experimental builds aliasing (not implementing) certain webkit properties to see if that would improve the experience for users.
+
+To assess the situation, I (on my [Opera Developer Relations](http://dev.opera.com/) time) started this Web survey script. There are a lot of issues with the script itself and interaction with the Web. It is a **first step**. It deserves a lot more care. I will open some issues to fix. Pull requests are welcome. But at least it could provide a common code base for everyone to work on. Read the report of August 2012 for having a sense of some of the issues.
+
+
 # Code for Analyzing CSS properties from a list of URIs.
 
 ## Goals
@@ -15,7 +26,7 @@
 
 	for selectorGroup in cssRules:
 		score = 0
-		// separate in 
+		// separate in
 		if -vendorA-rule in declarationNameList:
 			score =+ 1
 		    if -vendorB-rule in declarationNameList:
