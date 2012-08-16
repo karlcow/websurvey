@@ -38,3 +38,7 @@ To assess the situation, I (on my [Opera Developer Relations](http://dev.opera.c
 * if score = 3, -vendorA- + -vendorB-
 * if score = 5, -vendorA- + unprefixed
 * if score = 7, -vendorA- + -vendorB- + unprefixed
+
+## Licence
+
+This software is released under the [MIT licence](./LICENSE).
