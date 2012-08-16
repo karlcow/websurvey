@@ -291,6 +291,7 @@ def main():
                         logging.info("CSS LINK REL: %s at %s" % (len(cssurislist), finaluri))
                     for cssuri in cssurislist:
                         cssruleslist = css.getCssRules(cssuri)
+                        logging.info("LINK REL SIZE: %s at %s" % (len(cssruleslist.cssText), cssuri))
                         try:
                             cssruleslist = css.getCssRules(cssuri)
                         except ValueError as e:
