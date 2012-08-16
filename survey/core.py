@@ -95,7 +95,8 @@ class Css:
     def getCssUriList(self, htmltext, uri):
         """Given an htmltext, get the list of linked CSS"""
         cssurilist = []
-        tree = etree.HTML(htmltext)
+        myparser = etree.HTMLParser(encoding="utf-8")
+        tree = etree.HTML(htmltext, parser=myparser)
         csspathlist = tree.xpath('//link[@rel="stylesheet"]/@href')
         for i, csspath in enumerate(csspathlist):
             cssurl = urlparse.urljoin(uri, csspath)
@@ -141,7 +142,8 @@ class Css:
         """Given an htmltext,
         check if the style element is available
         return True if yes"""
-        tree = etree.HTML(htmltext)
+        myparser = etree.HTMLParser(encoding="utf-8")
+        tree = etree.HTML(htmltext, parser=myparser)
         styleelements = tree.xpath('//style')
         if not styleelements:
             return False
@@ -153,7 +155,8 @@ class Css:
         return the CSS rules contained in the content"""
         compiledstyle = ""
         stylesheet = cssutils.css.CSSStyleSheet()
-        tree = etree.HTML(htmltext)
+        myparser = etree.HTMLParser(encoding="utf-8")
+        tree = etree.HTML(htmltext, parser=myparser)
         styleelements = tree.xpath('//style')
         for styleelt in styleelements:
             if styleelt.text != None:
