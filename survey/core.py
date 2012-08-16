@@ -25,7 +25,7 @@ SITELIST = os.path.dirname(__file__) + "/../tests/urlist-top1000.data"
 UAREF = "Opera/9.80 (Android 2.3.5; Linux; Opera Mobi/ADR-1202082305; U; en) Presto/2.10.254 Version/12.00"
 UATEST = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.6 (KHTML, like Gecko) Chrome/20.0.1092.0 Safari/536.6"
 logging.basicConfig(filename='log_filename.txt', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
-VENDORPREFIX = ['epub', 'moz', 'ms', 'o', 'webkit']
+VENDORPREFIX = ['moz', 'ms', 'o', 'webkit']
 
 
 class UriCheck:
