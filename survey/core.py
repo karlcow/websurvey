@@ -75,7 +75,7 @@ class HttpRequests:
             isinstance(responsetext, basestring)
         # Log type errors
         except TypeError as e:
-            logging.debug("HTMLTEXT - %s" % (e.message))
+            logging.debug("getContent - %s - %s" % (uri, e.message))
         else:
             # then test if it's unicode and convert it
             if isinstance(responsetext, unicode):
