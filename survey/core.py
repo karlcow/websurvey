@@ -278,9 +278,11 @@ def main():
                                 if cssrule.type == 1:
                                     for i, propertyname in enumerate(propertytocheck):
                                         score, propertyresultlist = survey.compareCssProperties('o', 'webkit', propertyname, cssrule.style)
+                                        propertyfulllist = survey.getVendorPrefixes(propertyname, cssrule.style)
                                         # printing only if the propertyname is found and if there is more than prefixless
-                                        if score > 0 and score != 4:
-                                            print propertyresultlist, finaluri
+                                        if score > 0:
+                                            print finaluri, propertyfulllist
+                                            logging.info("SURVEY: %s %s" % (finaluri, propertyfulllist))
 
                     cssurislist = css.getCssUriList(htmltext, finaluri)
                     if len(cssurislist) == 0:
@@ -305,7 +307,7 @@ def main():
                                     if score > 0:
                                         # print finaluri, propertyresultlist
                                         print finaluri, propertyfulllist
-                                        logging.info("SURVEY: %s %s" % (finaluri, propertyresultlist))
+                                        logging.info("SURVEY: %s %s" % (finaluri, propertyfulllist))
                         # logging.info(responseheaders)
 
                 except requests.exceptions.ConnectionError as e:
