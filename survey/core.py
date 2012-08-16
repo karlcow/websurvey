@@ -26,6 +26,7 @@ UAREF = "Opera/9.80 (Android 2.3.5; Linux; Opera Mobi/ADR-1202082305; U; en) Pre
 UATEST = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.6 (KHTML, like Gecko) Chrome/20.0.1092.0 Safari/536.6"
 logging.basicConfig(filename='log_filename.txt', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 VENDORPREFIX = ['moz', 'ms', 'o', 'webkit']
+PROPERTYTOCHECK = ['transition', 'transform', 'animation', 'background-size']
 
 
 class UriCheck:
@@ -255,7 +256,6 @@ def main():
     req = HttpRequests()
     css = Css()
     survey = Survey()
-    propertytocheck = ['transition', 'transform', 'animation']
     with open(SITELIST) as f:
         logging.info("START - %s with %s" % (datetime.today().isoformat(), UAREF))
         for uri in f:
@@ -276,7 +276,7 @@ def main():
                             logging.info("STYLE ELEMENT SIZE: %s at %s" % (len(styleeltrule.cssText), finaluri))
                             for cssrule in styleeltrule:
                                 if cssrule.type == 1:
-                                    for i, propertyname in enumerate(propertytocheck):
+                                    for i, propertyname in enumerate(PROPERTYTOCHECK):
                                         score, propertyresultlist = survey.compareCssProperties('o', 'webkit', propertyname, cssrule.style)
                                         propertyfulllist = survey.getVendorPrefixes(propertyname, cssrule.style)
                                         # printing only if the propertyname is found and if there is more than prefixless
@@ -300,7 +300,7 @@ def main():
                             if cssrule.type == 1:
                                 # This is a rule, we process
                                 # Reminder cssrule.type == 0 -> comment
-                                for i, propertyname in enumerate(propertytocheck):
+                                for i, propertyname in enumerate(PROPERTYTOCHECK):
                                     score, propertyresultlist = survey.compareCssProperties('o', 'webkit', propertyname, cssrule.style)
                                     propertyfulllist = survey.getVendorPrefixes(propertyname, cssrule.style)
                                     # printing only if the propertyname is found and if there is more than prefixless
