@@ -68,7 +68,19 @@
 <p>For Opera Mobile</p>
 <pre>Opera/9.80 (Android 2.3.5; Linux; Opera Mobi/ADR-1202082305; U; en) Presto/2.10.254 Version/12.00</pre>
 
+<h2 id="survey-log">Main data logged in the survey file</h2>
 
+<p>We logged a few things in the log file. The main data about vendor prefixes are expressed with</p>
+
+<pre>2012-08-14 11:31:50,127 - INFO - SURVEY: http://www.opera.com/ ['transition', 'moz', 'o', 'webkit', 'prefixless']</pre>
+
+
+<ul>
+    <li>the date and the term INFO</li>
+    <li>the keyword SURVEY</li>
+    <li>the URL being analyzed</li>
+    <li>a list with the first item being the name of the property and then the list of vendor prefixes used for the specific block. 'prefixless' means that the property without prefixes is available.</li>
+</ul>
 <h2 id="caveat">Python Script Caveats and Limitations</h2>
 
 <p>The script has certain flaws. It uses three external libraries: Requests, lxml, cssutils and the script in addition to its own bugs might be dependent on the bugs of these libraries.</p>
@@ -113,6 +125,9 @@ Starting new HTTP connection (1): m.sfgate.com
 <p>We parsed only CSS which were set through a <code>style</code> element or a <code>link rel</code> element. We did not take into consideration styles set through the <code>style</code> attribute or through JavaScript.</p>
 
 <h1 id="survey">Survey Results</h1>
+
+<p>The data for the survey are available on @@link to github@@ as reference. Feel free to reuse them, point out mistakes. As said this is much a work in progress and we have certainly made mistakes.</p>
+
 <h2 id="linkrel">CSS types frequency</h2>
 
 <p>Usually high traffic Web sites try to keep the number of HTTP requests to a minimum, because the time an HTTP request takes to be completed has an important cost on overall performance of the Web site. Because we were requesting the Web sites CSS URLs, we took the opportunity to count them.</p>
