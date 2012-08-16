@@ -1,8 +1,0 @@
-2012-08-04 06:36:35,008 - INFO - START - 2012-08-04T06:36:35.008383 with Opera/9.80 (Android 2.3.5; Linux; Opera Mobi/ADR-1202082305; U; en) Presto/2.10.254 Version/12.00
-2012-08-04 06:36:35,025 - INFO - SITE: http://yahoo.com/
-2012-08-04 06:36:35,121 - INFO - Starting new HTTP connection (1): yahoo.com
-2012-08-04 06:36:35,318 - DEBUG - "GET / HTTP/1.1" 301 None
-2012-08-04 06:36:35,319 - INFO - Starting new HTTP connection (1): www.yahoo.com
-2012-08-04 06:36:35,793 - DEBUG - "GET / HTTP/1.1" 302 None
-2012-08-04 06:36:35,795 - INFO - Starting new HTTP connection (1): m.yahoo.com
-2012-08-04 06:36:38,531 - DEBUG - "GET /?.tsrc=yahoo&mobile_view_default=true HTTP/1.1" 200 None
