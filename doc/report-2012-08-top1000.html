@@ -245,6 +245,180 @@ Starting new HTTP connection (1): m.sfgate.com
 
 <p class="todo">There are certainly a few graphs to make to make it easier to understand. Be my guest.</p>
 
+<h2 id="survey-transition">CSS Transition</h2>
+
+<p>Let's take a look at transition. How many sites used <code>transition</code> at least once on the 1000 sites. Something along:</p>
+
+<h3 id="transall">Some combination of prefixes </h3>
+<pre>.foo {-webkit-transition: background-color linear 1s;
+         -moz-transition: background-color linear 1s;
+          -ms-transition: background-color linear 1s;
+           -o-transition: background-color linear 1s;
+              transition: background-color linear 1s;
+    }</pre>
+
+<p>Let's grep…</p>
+<pre>grep "SURVEY"  log-2012-08-opera-dsk.txt | sed 's/^.*SURVEY: //' | sort | uniq -c | grep 'transition' | awk '{print $2}' | sort | wc -l</pre>
+
+<p>In parenthesis the number of sites which have all vendor prefixes for at least one CSS rule on the site.</p>
+
+<ul>
+    <li>Desktop: 292 (65)</li>
+    <li>Mobile: 253 (46)</li>
+</ul>
+
+<p>What about the frequency for each vendor prefixes?</p>
+
+<pre>grep "SURVEY"  log-2012-08-opera-mob.txt | sed 's/^.*SURVEY: //' | sort | uniq -c | grep 'transition'| grep "'o'" | awk '{print $2}' | sort | uniq -c |wc -l</pre>
+
+<table>
+    <caption>Number of sites a vendor prefix is being used at least once</caption>
+    <thead>
+        <tr>
+            <th>vendor prefix</th>
+            <td>webkit</td>
+            <td>moz</td>
+            <td>ms</td>
+            <td>o</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>Desktop</th>
+            <td>187</td>
+            <td>175</td>
+            <td>78</td>
+            <td>140</td>
+        </tr>
+        <tr>
+            <th>Mobile</th>
+            <td>169</td>
+            <td>143</td>
+            <td>53</td>
+            <td>117</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>We can see that Web developers are using webkit, then moz, then o, then ms. Which means IE will have the hardest time of all of the browsers.</p>
+
+<p>On these sites how many used <code>transition</code> without the prefixless property. This is important, because these are Web sites which are likely to break once we drop the prefix inside the browser. It shows also how much a browser vendor might be encouraged to drop or not the prefixed property. Remember when a site is breaking, it is breaking for individual people.</p>
+
+<pre>.foo {-webkit-transition: background-color linear 1s;
+         -moz-transition: background-color linear 1s;
+          -ms-transition: background-color linear 1s;
+           -o-transition: background-color linear 1s;
+    }</pre>
+
+<ul>
+    <li>Desktop: 89</li>
+    <li>Mobile: 91</li>
+</ul>
+
+<p>Let's see again the frequency for each vendor prefixes but this time without prefixless version?</p>
+
+<p>Why this is interesting? Because it shows the ability for a browser vendor to drop the prefixed version from its implementation. If the prefixed version is dropped and there is no prefixless version, the site will break for this specific browser. And the <strong>irony of this situation</strong> is that it is indeed a lot harder for webkit to drop prefixes than other browsers because a lot more sites will break. Basically, Web developers used only webkit prefixes in many CSS rules with the prefixless fallback, creating sometimes issues <strong>for other browsers now</strong> and creating issues <strong>for webkit in the future</strong>.</p>
+
+<pre>grep "SURVEY"  log-2012-08-opera-mob.txt | sed 's/^.*SURVEY: //' | sort | uniq -c | grep 'transition'| grep "'o'" | grep -v "'prefixless'" | awk '{print $2}' | sort | uniq -c |wc -l</pre>
+
+<table>
+    <caption>Number of sites a vendor prefix is being used at least once and does not have prefixless</caption>
+    <thead>
+        <tr>
+            <th>vendor prefix</th>
+            <td>webkit</td>
+            <td>moz</td>
+            <td>ms</td>
+            <td>o</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>Desktop</th>
+            <td>72</td>
+            <td>42</td>
+            <td>10</td>
+            <td>27</td>
+        </tr>
+        <tr>
+            <th>Mobile</th>
+            <td>80</td>
+            <td>33</td>
+            <td>7</td>
+            <td>14</td>
+        </tr>
+    </tbody>
+</table>
+
+
+<p>How many of these sites without the prefixless version use <strong>only one vendor prefix</strong>, such as</p>
+
+<pre>.foo {-webkit-transition: background-color linear 1s;}</pre>
+
+<table>
+    <caption>Number of sites with rules having only one prefixed css property</caption>
+    <thead>
+        <tr>
+            <th>vendor prefix</th>
+            <td>webkit</td>
+            <td>moz</td>
+            <td>ms</td>
+            <td>o</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>Desktop</th>
+            <td>39</td>
+            <td>0</td>
+            <td>0</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <th>Mobile</th>
+            <td>51</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>We can start to feel the disturbance in the force. Basically some sites are having CSS rules targeting only and only webkit. If you are wondering about the 1 in Desktop for Opera. It is Facebook which is having 10 CSS rules with <code>-o-transition</code>. Remember the survey has been ran with an Opera user agent. I suspect Facebook to send different stylesheets to different user agents. That would be to verify.</p>
+
+<pre>10 http://www.facebook.com/ ['transition', 'o']</pre>
+
+<p>Often the sites uses a webkit only for one CSS rule and use vendor prefixes elsewhere in the code. It seems that more than one person is working on the CSS with different coding styles. Or it might be just negligeance. But what is a lot more disturbing is this following list of Web sites (if we have not made a mistake). This is the list of <strong>mobile sites</strong> which have <code>-webkit-transition</code> only and no rules at all with other vendors. Why is it disturbing? Because these sites have taken care of identifying Opera Mobile user agent, redirected in most cases to the mobile sites and still serves a CSS which will create difficulties or incomplete user experiences for this specific user agent.</p>
+
+<pre># mobile sites list
+http://3g.kaixin001.com/
+http://java.com/en/
+http://m.avito.ru/
+http://m.bing.com/?mid=10006
+http://m.livejasmin.com/en/home
+http://m.myspace.com/home.wap?bfd=webnext
+http://m.nordstrom.com/
+http://m.photobucket.com/?src=www
+http://m.retailmenot.com/
+http://m.sears.com/
+http://m.subito.it/
+http://m.taobao.com/?sprefer=sypc00
+http://m.tmall.com/?sprefer=sypc01
+http://mi.nba.com/_touch/
+http://mobile.news.com.au/
+http://mobile.wetter.com/
+http://tw.m.wretch.yahoo.com/
+http://wap.sogou.com/?fr=s-sogou&amp;clk=s-sogou
+http://www.buzzfeed.com/?s=mobile
+http://www.etsy.com/
+http://www.tripadvisor.com/
+http://www.verizonwireless.com/b2c/index.html
+http://www.wikia.com/Wikia
+https://online.citibank.com/US/Welcome.c
+https://www.outbrain.com/
+</pre>
+
+
 <footer>
 <address><a href="http://www.la-grange.net/karl/">Karl Dubost</a> (twitter: <a href="http://twitter.com/karlpro">@karlpro</a>)</address>
 <p class="date">14 August 2012</p>
