@@ -100,6 +100,22 @@
 
 <p>There are others things logged into these files. We let you explore them. It might be necessary to document them. The script is raw on the edge and the logs are too. Any proposal for improving the log, the storage of results to make it more usable are welcome. We compiled the results with a care of sed, grep, uniq, sort and awk. They are fast, flexible and… do the job. But we are open to <a href="https://github.com/karlcow/websurvey/issues/12">better ways of doing it</a>.</p>
 
+<h3 id="extract-survey">Stats for the survey</h3>
+
+<p>To extract all the lines, related to the survey. <code>sort</code> will put in order similar lines. <code>uniq -c</code> will compile and count the same lines.</p>
+<pre>grep "SURVEY"  log-2012-08-dsk.txt | sed 's/^.*SURVEY: //' | sort | uniq -c</pre>
+
+<p>We can then extract everything related for example to <code>transition</code>.</p>
+<pre>grep "SURVEY"  log-2012-08-dsk.txt | sed 's/^.*SURVEY: //' | sort | uniq -c | grep 'transition'</pre>
+
+<p>or to a specific Web site such as youtube.</p>
+<pre>grep "SURVEY"  log-2012-08-dsk.txt | sed 's/^.*SURVEY: //' | sort | uniq -c | grep 'youtube'</pre>
+
+<p>This will give us all sites which are not adding <code>-o-</code> in their rules.</p>
+<pre>grep "SURVEY"  log-2012-08-dsk.txt | sed 's/^.*SURVEY: //' | sort | uniq -c | grep -v "'o'"</pre>
+
+<p>and the sites without <code>-o-</code> AND without the prefixless property.</p>
+<pre>grep "SURVEY"  log-2012-08-dsk.txt | sed 's/^.*SURVEY: //' | sort | uniq -c | grep -v "'o'" | grep -v "'prefixless'"</pre>
 
 <h2 id="caveat">Python Script Caveats and Limitations</h2>
 
