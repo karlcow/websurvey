@@ -41,27 +41,40 @@
         left:0;
         background-color: rgb(245,245,245);
         padding: 1rem;}
+    .important {border-left: 5px solid #f55;
+        padding-left: 1rem;}
+    .important::before {content:"Note: ";
+        font-family: sans-serif;
+        color: #f55;
+        display:block;
+        font-weight: bold;}
     </style>
 </head>
 <body>
 
 <h1 id="Intro">Opera - Vendor Prefixes Report for CSS animation, transform, transition, background-size</h1>
 
-<p>To assess the damages that CSS vendor prefixes could create on Opera Browser, we have created a script which is looking at the type of CSS used for certain properties. This survey has been ran by <a href="http://www.la-grange.net/karl/">Karl Dubost</a> (twitter: <a href="http://twitter.com/karlpro">@karlpro</a>) for <a href="http://dev.opera.com/">Opera Developer Relations</a> on August 2012.</p>
+<p>To assess the damages that CSS vendor prefixes could create on <a href="http://www.opera.com/browser/">Opera Browser</a>, we have created a <a href="http://github.com/karlcow/websurvey/">script</a> which is looking at the type of CSS used for certain properties. This survey has been ran by <a href="http://www.la-grange.net/karl/">Karl Dubost</a> (twitter: <a href="http://twitter.com/karlpro">@karlpro</a>) for <a href="http://dev.opera.com/">Opera Developer Relations</a> on August 2012.</p>
 
-<h2 id="sample">Data Sample</h2>
+<p class="important">This survey (and associated scripts) is meant to give an idea on what is done on the Web with regards to a few properties. <strong>Statistics "lie"</strong>.  That's their goal. They often give a view which erases the individual cases. On the other hand, a user browsing the Web is all about individual case. A specific site will break for a specific site and a specific browser. The fact it is breaking for a small market share, for a single country, etc, doesn't remove the fact that it is breaking.</p>
+
+<p>Before going into the results, we are giving information on the data set, what we tested and the many caveats of this survey.</p>
+
+<h2 id="sample">Alexa Data Sample</h2>
 
 <p>We used the list of top 1000 sites given by Alexa (2012-07-30) extracted from the top 1 million sites. Alexa is giving a list of domain names only.</p>
 
 <pre>970,opera.com</pre>
 
-<p>We applied a transformation, so we get an URI to process. Obviously the main Web site will sometimes be different. See the section on <a href="#caveat-redir">caveats</a></p>
+<p>We applied a transformation, so we get an URI to process.</p>
 
 <pre>http://opera.com/</pre>
 
+<p>Obviously the main Web site will sometimes be different. See the section on <a href="#caveat-redir">caveats</a></p>
+
 <h2 id="user-agent">User Agents Strings</h2>
 
-<p>We used two user agent strings and ran the survey twice to assess if the results are different.</p>
+<p>We used two user agent strings (one for mobile and one for desktop) and ran the survey twice to assess if the results are different.</p>
 
 <p>For Opera desktop</p>
 <pre>"Opera/9.80 (Macintosh; Intel Mac OS X 10.8.0) Presto/2.12.363 Version/12.50"</pre>
@@ -70,10 +83,9 @@
 
 <h2 id="survey-log">Main data logged in the survey file</h2>
 
-<p>We logged a few things in the log file. The main data about vendor prefixes are expressed with</p>
+<p>We logged a few things in the log file. The main data about vendor prefixes are expressed with lines such as</p>
 
 <pre>2012-08-14 11:31:50,127 - INFO - SURVEY: http://www.opera.com/ ['transition', 'moz', 'o', 'webkit', 'prefixless']</pre>
-
 
 <ul>
     <li>the date and the term INFO</li>
@@ -81,9 +93,13 @@
     <li>the URL being analyzed</li>
     <li>a list with the first item being the name of the property and then the list of vendor prefixes used for the specific block. 'prefixless' means that the property without prefixes is available.</li>
 </ul>
+
+<p>There are others things logged into these files. We let you explore them. It might be necessary to document them. The script is raw on the edge and the logs are too. Any proposal for improving the log, the storage of results to make it more usable are welcome. We compiled the results with a care of sed, grep, uniq, sort and awk. They are fast, flexible and… do the job. But we are open to <a href="https://github.com/karlcow/websurvey/issues/12">better ways of doing it</a>.</p>
+
+
 <h2 id="caveat">Python Script Caveats and Limitations</h2>
 
-<p>The script has certain flaws. It uses three external libraries: Requests, lxml, cssutils and the script in addition to its own bugs might be dependent on the bugs of these libraries.</p>
+<p>The script has many flaws. First it has been written by me (Karl Dubost). Count that for one of its flaws. It uses three external libraries: Requests, lxml, cssutils and the script in addition to its own bugs might be dependent on the bugs of these libraries. Some of its caveats are described in the following sections.</p>
 
 <h3 id="caveat-perf">Performances</h3>
 
@@ -102,9 +118,9 @@
 
 <h3 id="caveat-sample">Sample and Countries</h3>
 
-<p>Alexa has domains from different countries, but it is not necessary representative of the local sites used for each countries. This is important when adressing specific local market shares. It is usually hard to have a good overview for each countries. So in this report, we are not trying to address this aspect of the data.</p>
+<p>Alexa has domains from different countries, but it is not necessary representative of the local sites used for each countries. This is important when adressing specific local market shares. It is usually hard to have a good overview for each countries. So in this report, we are not trying to address this aspect of the data. It would be an interesting additional study to do for this survey and explore the differences between the markets.</p>
 
-<h3 id="caveat-redir">Redirections</h3>
+<h3 id="caveat-redir">HTTP Redirections</h3>
 
 <p>Because we are starting with an URL, which is based on the domain name, some sites will redirect the HTTP requests according to the user agent. For example, for the Opera domain, we access first <code>http://opera.com/</code> then <code>http://www.opera.com/</code>. When accessing with the mobile user agent, we get additional redirections for certains sites such as sfgate</p>
 
@@ -118,15 +134,23 @@ Starting new HTTP connection (1): m.sfgate.com
 "GET /sfchron/index.htm HTTP/1.1" 200 None
 </pre>
 
-<p>The script is interacting at the HTTP layer and doesn't have a JavaScript interpreter. So all sites which are dependent on JavaScript for redirecting the browser have not been working accordingly to the intent of the owner. It can be difficult to assess that either the Web site has a separate mobile site without redirection, if the redirection was made only through JavaScript or if the Web site has no separate site (be only desktop or dealing with mediaqueries for the user experience on mobile).</p>
+<p>The script is interacting at the HTTP layer and doesn't have a JavaScript interpreter. So all sites which are dependent on JavaScript for redirecting the browser have not been working accordingly to the intent of the owner. It can be difficult to assess what is the exact mobile version:</p>
+
+<ul>
+    <li>a separate mobile site without redirection</li>
+    <li>a redirection to the redirection <strong>made only</strong> through JavaScript</li>
+    <li>no separate site (mediaqueries used for different screen sizes)</li>
+    <li>a redirection to a specific device application</li>
+</ul>
 
 <h3 id="caveat-css">Type of CSS</h3>
 
-<p>We parsed only CSS which were set through a <code>style</code> element or a <code>link rel</code> element. We did not take into consideration styles set through the <code>style</code> attribute or through JavaScript.</p>
+<p>We parsed only CSS which were set through a <code>style</code> element or a <code>link rel</code> element. We did not take into consideration styles set through the <code>style</code> attribute or through JavaScript. Some sites modify their CSS depending on the user agent and a few other rules.</p>
+
 
 <h1 id="survey">Survey Results</h1>
 
-<p>The data for the survey are available on <a href="http://github.com/karlcow/websurvey/doc/">github</a> as reference. Feel free to reuse them, point out mistakes. As said this is much a work in progress and we have certainly made mistakes.</p>
+<p>The data for the survey are available on <a href="http://github.com/karlcow/websurvey/doc/">github</a> as reference. Feel free to reuse them, point out mistakes. As said this is much a work in progress and we have certainly made mistakes. <a href="Intro">Read again the introduction…</a> it is imperfect.</p>
 
 <h2 id="linkrel">CSS types frequency</h2>
 
