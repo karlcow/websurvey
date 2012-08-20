@@ -1,0 +1,708 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Opera - Vendor Prefixes Report for CSS animation, transform, transition, background-size</title>
+    <link rel="stylesheet" href="http://www.la-grange.net/style/simple.css">
+    <style>
+    table {font-size: .8rem;
+        border-collapse:collapse;
+        border-spacing:0;
+        margin: 1rem 0;
+        width:auto;}
+    caption,th {text-align:left;}
+    caption {
+    line-height: 1rem;
+    padding: .5rem 1rem;
+    border-top: 1px solid rgb(230,230,230);}
+
+    thead { border-top: 1px solid rgb(230,230,230);}
+    thead th {
+        line-height: 1rem;
+        padding: .5rem 1rem;
+        color: eee;
+        text-align:center;
+}
+    tbody th {
+    line-height: 1rem;
+    padding: .5rem 1rem;
+    background-color: #eee;
+    color: eee;
+    text-align:center;
+    }
+    td {font-family:  sans-serif;
+    padding: .5rem 1rem;
+    text-align:left}
+    tbody {background-color: rgb(245,245,245);}
+
+    body {margin-bottom:200px;}
+    footer {
+        width:100%;
+        position: fixed;
+        bottom:0;
+        left:0;
+        background-color: rgb(245,245,245);
+        padding: 1rem;}
+    .important {border-left: 5px solid #f55;
+        padding-left: 1rem;}
+    .important::before {content:"Note: ";
+        font-family: sans-serif;
+        color: #f55;
+        display:block;
+        font-weight: bold;}
+    .todo {border-left: 5px solid #ffcc00;
+        padding-left: 1rem;}
+    pre {background-color: rgb(245,245,245);
+        padding: 1rem;
+        border-left: 5px solid rgb(225,225,225);}
+    </style>
+</head>
+<body>
+
+<h1 id="Intro">Opera - Vendor Prefixes Report for CSS animation, transform, transition, background-size</h1>
+
+<p>To assess the damages that CSS vendor prefixes could create on <a href="http://www.opera.com/browser/">Opera Browser</a>, we have created a <a href="http://github.com/karlcow/websurvey/">script</a> which is looking at the type of CSS used for certain properties. This survey has been ran by <a href="http://www.la-grange.net/karl/">Karl Dubost</a> (twitter: <a href="http://twitter.com/karlpro">@karlpro</a>) for <a href="http://dev.opera.com/">Opera Developer Relations</a> on August 2012.</p>
+
+<p class="important">This survey (and associated scripts) is meant to give an idea on what is done on the Web with regards to a few properties. <strong>Statistics "lie"</strong>.  That's their goal. They often give a view which erases the individual cases. On the other hand, a user browsing the Web is all about individual case. A specific site will break for a specific site and a specific browser. The fact it is breaking for a small market share, for a single country, etc, doesn't remove the fact that it is breaking. You will notice we didn't give any percentages. A finer grained analysis with a manual checking is necessary to give relevant percentages assorted of error margings. The number are here to show a trend and difficulties it might create.</p>
+
+<p>Before going into the results, we are giving information on the data set, what we tested and the many caveats of this survey.</p>
+
+<h2 id="report-bugs">How to report bugs, suggest feature on this survey?</h2>
+
+<p>Everything about this survey is opensource <a href="http://github.com/karlcow/websurvey/LICENSE">under MIT License</a>, you are welcome to take the source code and run your own. It would be appreciated though if you could submit patches, <a href="http://github.com/karlcow/websurvey/issues">suggest features</a>, etc. This is a first draft or alpha if you prefer. A lot of things can be done to improve and make it useful for all of us.</p>
+
+<h2 id="sample">Alexa Data Sample</h2>
+
+<p>We used the list of top 1000 sites given by Alexa (2012-07-30) extracted from the top 1 million sites. Alexa is giving a list of domain names only.</p>
+
+<pre>970,opera.com</pre>
+
+<p>We applied a transformation, so we get an URI to process.</p>
+
+<pre>http://opera.com/</pre>
+
+<p>Obviously the main Web site will sometimes be different. See the section on <a href="#caveat-redir">caveats</a></p>
+
+<h2 id="user-agent">User Agents Strings</h2>
+
+<p>We used two user agent strings (one for mobile and one for desktop) and ran the survey twice to assess if the results are different.</p>
+
+<p>For Opera desktop</p>
+<pre>Opera/9.80 (Macintosh; Intel Mac OS X 10.8.0) Presto/2.12.363 Version/12.50</pre>
+<p>For Opera Mobile</p>
+<pre>Opera/9.80 (Android 2.3.5; Linux; Opera Mobi/ADR-1202082305; U; en) Presto/2.10.254 Version/12.00</pre>
+
+<h2 id="survey-log">Main data logged in the survey file</h2>
+
+<p>We logged a few things in the log file. The main data about vendor prefixes are expressed with lines such as</p>
+
+<pre>2012-08-14 11:31:50,127 - INFO - SURVEY: http://www.opera.com/ ['transition', 'moz', 'o', 'webkit', 'prefixless']</pre>
+
+<ul>
+    <li>the date and the term INFO</li>
+    <li>the keyword SURVEY</li>
+    <li>the URL being analyzed</li>
+    <li>a list with the first item being the name of the property and then the list of vendor prefixes used for the specific block. 'prefixless' means that the property without prefixes is available.</li>
+</ul>
+
+<p>There are others things logged into these files. We let you explore them. It might be necessary to document them. The script is raw on the edge and the logs are too. Any proposal for improving the log, the storage of results to make it more usable are welcome. We compiled the results with a care of sed, grep, uniq, sort and awk. They are fast, flexible and… do the job. But we are open to <a href="https://github.com/karlcow/websurvey/issues/12">better ways of doing it</a>.</p>
+
+<h3 id="extract-survey">Stats for the survey</h3>
+
+<p>To extract all the lines, related to the survey. <code>sort</code> will put in order similar lines. <code>uniq -c</code> will compile and count the same lines.</p>
+<pre>grep "SURVEY"  log-2012-08-dsk.txt | sed 's/^.*SURVEY: //' | sort | uniq -c</pre>
+
+<p>We can then extract everything related for example to <code>transition</code>.</p>
+<pre>grep "SURVEY"  log-2012-08-dsk.txt | sed 's/^.*SURVEY: //' | sort | uniq -c | grep 'transition'</pre>
+
+<p>or to a specific Web site such as youtube.</p>
+<pre>grep "SURVEY"  log-2012-08-dsk.txt | sed 's/^.*SURVEY: //' | sort | uniq -c | grep 'youtube'</pre>
+
+<p>This will give us all sites which are not adding <code>-o-</code> in their rules.</p>
+<pre>grep "SURVEY"  log-2012-08-dsk.txt | sed 's/^.*SURVEY: //' | sort | uniq -c | grep -v "'o'"</pre>
+
+<p>and the sites without <code>-o-</code> AND without the prefixless property.</p>
+<pre>grep "SURVEY"  log-2012-08-dsk.txt | sed 's/^.*SURVEY: //' | sort | uniq -c | grep -v "'o'" | grep -v "'prefixless'"</pre>
+
+<h2 id="caveat">Python Script Caveats and Limitations</h2>
+
+<p>The script has many flaws. First it has been written by me (Karl Dubost). Count that for one of its flaws. It uses three external libraries: Requests, lxml, cssutils and the script in addition to its own bugs might be dependent on the bugs of these libraries. Some of its caveats are described in the following sections.</p>
+
+<h3 id="caveat-perf">Performances</h3>
+
+<p>The script is not really fast. And there are certainly issues to address if we wanted to process a larger volume of data. The sample of 1000 sites took around 7 hours and 22 minutes (442 minutes). So we have processed 1 site every 26.52s (as a mean). Some sites takes longer than others.</p>
+
+<ul>
+    <li>Initial HTTP request</li>
+    <li>HTTP redirections</li>
+    <li>Connections failed</li>
+    <li>HTML Parsing</li>
+    <li>CSS Parsing</li>
+    <li>The code itself</li>
+</ul>
+
+<p>We could probably improve the performances of the script by first downloading all the resources locally and then analyzing them locally. It's a path to explore for future versions. That would greatly help for running stats on the same sample of data.</p>
+
+<h3 id="caveat-sample">Sample and Countries</h3>
+
+<p>Alexa has domains from different countries, but it is not necessary representative of the local sites used for each countries. This is important when adressing specific local market shares. It is usually hard to have a good overview for each countries. So in this report, we are not trying to address this aspect of the data. It would be an interesting additional study to do for this survey and explore the differences between the markets.</p>
+
+<h3 id="caveat-redir">HTTP Redirections</h3>
+
+<p>Because we are starting with an URL, which is based on the domain name, some sites will redirect the HTTP requests according to the user agent. For example, for the Opera domain, we access first <code>http://opera.com/</code> then <code>http://www.opera.com/</code>. When accessing with the mobile user agent, we get additional redirections for certains sites such as sfgate</p>
+
+<pre>
+Starting new HTTP connection (1): sfgate.com
+"GET / HTTP/1.1" 302 235
+Starting new HTTP connection (1): www.sfgate.com
+"GET / HTTP/1.1" 302 39
+Starting new HTTP connection (1): m.sfgate.com
+"GET / HTTP/1.1" 302 0
+"GET /sfchron/index.htm HTTP/1.1" 200 None
+</pre>
+
+<p>The script is interacting at the HTTP layer and doesn't have a JavaScript interpreter. So all sites which are dependent on JavaScript for redirecting the browser have not been working accordingly to the intent of the owner. It can be difficult to assess what is the exact mobile version:</p>
+
+<ul>
+    <li>a separate mobile site without redirection</li>
+    <li>a redirection to the redirection <strong>made only</strong> through JavaScript</li>
+    <li>no separate site (mediaqueries used for different screen sizes)</li>
+    <li>a redirection to a specific device application</li>
+</ul>
+
+<p>On the Mobile survey, the results are then a mix of mobile (the redirection happened) and desktop Web sites (there was no redirection for one the previous reasons). We tried to figure out <strong>roughly</strong> the number of redirections. There are some patterns with domain names.</p>
+
+<pre>grep "Starting new HTTP connection" log-2012-08-opera-mob.txt | sed "s/.*connection (1): //" | uniq | grep "^m\." | wc -l</pre>
+
+<p>152 domains start with <code>m.</code></p>
+
+<pre>grep "Starting new HTTP connection" log-2012-08-opera-mob.txt | sed "s/.*connection (1): //" | uniq | grep "^mobile" | wc -l</pre>
+
+<p>24 domains start with <code>mobile</code>. A handful had a complete different domain name.</p>
+
+<p>That is another issue to solve and re-run the <a href="https://github.com/karlcow/websurvey/issues/14">survey for only mobile Web sites</a>.</p>
+
+
+<h3 id="caveat-css">Type of CSS</h3>
+
+<p>We parsed only CSS which were set through a <code>style</code> element or a <code>link rel</code> element. We did not take into consideration styles set through the <code>style</code> attribute or through JavaScript. Some sites modify their CSS depending on the user agent and a few other rules.</p>
+
+<h3 id="caveat-shorthand">Shorthand properties</h3>
+
+<p>In this first run, we tested only the shorthand properties. Some CSS generators create individual property rules and these are then not counted in this current survey. The main code has to be modified to take into account these cases. We opened the <a href="https://github.com/karlcow/websurvey/issues/13">issue 13</a>.</p>
+
+<p>It would also be interesting to assess what is the ratio of sites using the shorthand properties compared to the full individual rules.</p>
+
+<h3 id="caveat-manual">Manual Checking</h3>
+
+<p>The results given in that report do not mean that the Web site is completely broken for the users. It would require a very long work with a big group of volunteers for testing each individual site of the list.</p>
+
+<h1 id="survey">Survey Results</h1>
+
+<p>The data for the survey are available on <a href="http://github.com/karlcow/websurvey/doc/">github</a> as reference. Feel free to reuse them, point out mistakes. As said this is much a work in progress and we have certainly <a href="https://github.com/karlcow/websurvey/issues">made mistakes</a>. <a href="Intro">Read again the introduction…</a> it is imperfect.</p>
+
+<h2 id="linkrel">CSS types frequency</h2>
+
+<p>Usually high traffic Web sites try to keep the number of HTTP requests to a minimum, because the time an HTTP request takes to be completed has an important cost on overall performance of the Web site. Because we were requesting the Web sites CSS URLs, we took the opportunity to count them.</p>
+
+<table>
+    <caption>Distribution of number of sites with stylesheets (<code>link rel</code>)</caption>
+    <thead>
+        <tr>
+            <th>link rel</th>
+            <td>0</td>
+            <td>1</td>
+            <td>2</td>
+            <td>3</td>
+            <td>4</td>
+            <td>5</td>
+            <td>6</td>
+            <td>7</td>
+            <td>8</td>
+            <td>9</td>
+            <td>10</td>
+            <td>11</td>
+            <td>12 to 22</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="desktop">
+            <th>Desktop</th>
+            <td>187</td>
+            <td>266</td>
+            <td>202</td>
+            <td>114</td>
+            <td>69</td>
+            <td>40</td>
+            <td>26</td>
+            <td>14</td>
+            <td>14</td>
+            <td>13</td>
+            <td>4</td>
+            <td>8</td>
+            <td>0 to 2</td>
+        </tr>
+        <tr class="mobile">
+            <th>Mobile</th>
+            <td>262</td>
+            <td>295</td>
+            <td>188</td>
+            <td>85</td>
+            <td>53</td>
+            <td>27</td>
+            <td>14</td>
+            <td>13</td>
+            <td>6</td>
+            <td>8</td>
+            <td>3</td>
+            <td>4</td>
+            <td>0 to 2</td>
+        </tr>
+    </tbody>
+</table>
+
+<ol class="note">
+<li>Rank Alexa 73:  http://www.adobe.com/ has 10 link rel</li>
+<li>Rank Alexa 74:  http://www.rakuten.co.jp/ has 16 link rel</li>
+<li>Rank Alexa 744: http://www.alarabiya.net/ has 22 link rel.</li>
+</ol>
+
+<p>On the Desktop survey, among the 1000 sites, 492 Web sites were using one or more <code>style</code> elements. On Mobile, 455 Web sites.</p>
+
+<p class="todo">There are certainly a few graphs to make to make it easier to understand. Be my guest.</p>
+
+<h2 id="survey-transition">CSS shorthand <code>transition</code> property</h2>
+
+<p>Let's take a look at transition. How many sites used <code>transition</code> at least once on the 1000 sites. Something along:</p>
+
+<h3 id="transall">Some combination of prefixes </h3>
+<pre>.foo {-webkit-transition: background-color linear 1s;
+         -moz-transition: background-color linear 1s;
+          -ms-transition: background-color linear 1s;
+           -o-transition: background-color linear 1s;
+              transition: background-color linear 1s;
+    }</pre>
+
+<p>Let's grep…</p>
+<pre>grep "SURVEY"  log-2012-08-opera-dsk.txt | sed 's/^.*SURVEY: //' | sort | uniq -c | grep 'transition' | awk '{print $2}' | sort | uniq | wc -l</pre>
+
+<p>In parenthesis the number of sites which have all vendor prefixes for at least one CSS rule on the site. <code>['transition', 'moz', 'ms', 'o', 'webkit', 'prefixless']</code></p>
+
+<ul>
+    <li>Desktop: 188 (65)</li>
+    <li>Mobile: 170 (46)</li>
+</ul>
+
+<p>What about the frequency for each vendor prefixes?</p>
+
+<pre>grep "SURVEY"  log-2012-08-opera-mob.txt | sed 's/^.*SURVEY: //' | sort | uniq -c | grep 'transition'| grep "'o'" | awk '{print $2}' | sort | uniq -c |wc -l</pre>
+
+<table>
+    <caption>Number of sites a vendor prefix is being used at least once for transition shorthand</caption>
+    <thead>
+        <tr>
+            <th>vendor prefix</th>
+            <td>webkit</td>
+            <td>moz</td>
+            <td>ms</td>
+            <td>o</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>Desktop</th>
+            <td>187</td>
+            <td>175</td>
+            <td>78</td>
+            <td>140</td>
+        </tr>
+        <tr>
+            <th>Mobile</th>
+            <td>169</td>
+            <td>143</td>
+            <td>53</td>
+            <td>117</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>We can see that Web developers are using webkit, then moz, then o, then ms. Which means IE will have the hardest time of all of the browsers.</p>
+
+<p>On these sites how many used <code>transition</code> without the prefixless property. This is important, because these are Web sites which are likely to break once we drop the prefix inside the browser. It shows also how much a browser vendor might be encouraged to drop or not the prefixed property. Remember when a site is breaking, it is breaking for individual people.</p>
+
+<pre>.foo {-webkit-transition: background-color linear 1s;
+         -moz-transition: background-color linear 1s;
+          -ms-transition: background-color linear 1s;
+           -o-transition: background-color linear 1s;
+    }</pre>
+
+<ul>
+    <li>Desktop: 89</li>
+    <li>Mobile: 91</li>
+</ul>
+
+<p>Let's see again the frequency for each vendor prefixes but this time without prefixless version?</p>
+
+<p>Why this is interesting? Because it shows the ability for a browser vendor to drop the prefixed version from its implementation. If the prefixed version is dropped and there is no prefixless version, the site will break for this specific browser. And the <strong>irony of this situation</strong> is that it is indeed a lot harder for webkit to drop prefixes than other browsers because a lot more sites will break. Basically, Web developers used only webkit prefixes in many CSS rules without the prefixless fallback, creating sometimes issues <strong>for other browsers now</strong> and creating issues <strong>for webkit in the future</strong>.</p>
+
+<pre>grep "SURVEY"  log-2012-08-opera-mob.txt | sed 's/^.*SURVEY: //' | sort | uniq -c | grep 'transition'| grep "'o'" | grep -v "'prefixless'" | awk '{print $2}' | sort | uniq -c |wc -l</pre>
+
+<table>
+    <caption>Number of sites a vendor prefix is being used at least once and does not have prefixless for transition shorthand</caption>
+    <thead>
+        <tr>
+            <th>vendor prefix</th>
+            <td>webkit</td>
+            <td>moz</td>
+            <td>ms</td>
+            <td>o</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>Desktop</th>
+            <td>72</td>
+            <td>42</td>
+            <td>10</td>
+            <td>27</td>
+        </tr>
+        <tr>
+            <th>Mobile</th>
+            <td>80</td>
+            <td>33</td>
+            <td>7</td>
+            <td>14</td>
+        </tr>
+    </tbody>
+</table>
+
+
+<p>How many of these sites without the prefixless version use <strong>only one vendor prefix</strong>, such as</p>
+
+<pre>.foo {-webkit-transition: background-color linear 1s;}</pre>
+
+<p>For example to extract Web sites using only webkit</p>
+<pre>grep "SURVEY"  log-2012-08-opera-dsk.txt | sed 's/^.*SURVEY: //' | sort | uniq -c | grep 'transition'| grep -v "prefixless" | grep -v "'o'" | grep -v "'ms'" | grep -v "'moz'"</pre>
+
+<table>
+    <caption>Number of sites with rules having only one prefixed css property for transition shorthand</caption>
+    <thead>
+        <tr>
+            <th>vendor prefix</th>
+            <td>webkit</td>
+            <td>moz</td>
+            <td>ms</td>
+            <td>o</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>Desktop</th>
+            <td>39</td>
+            <td>0</td>
+            <td>0</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <th>Mobile</th>
+            <td>51</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>We can start to feel the disturbance in the force. Basically some sites are having CSS rules targeting only and only webkit. If you are wondering about the 1 in Desktop for Opera. It is Facebook which is having 10 CSS rules with <code>-o-transition</code>. Remember the survey has been ran with an Opera user agent. I suspect Facebook to send different stylesheets to different user agents. That would be to verify.</p>
+
+<pre>10 http://www.facebook.com/ ['transition', 'o']</pre>
+
+<p>Often the sites uses a webkit only for one CSS rule and use vendor prefixes elsewhere in the code. It seems that more than one person is working on the CSS with different coding styles. Or it might be just negligeance. But what is a lot more disturbing is this following list of Web sites (if we have not made a mistake). This is the list of <strong>mobile sites</strong> which have <code>-webkit-transition</code> only and no rules at all with other vendors. Why is it disturbing? Because these sites have taken care of identifying Opera Mobile user agent, redirected in most cases to the mobile sites and still serves a CSS which will create difficulties or incomplete user experiences for this specific user agent.</p>
+
+<pre># mobile sites list
+http://3g.kaixin001.com/
+http://java.com/en/
+http://m.avito.ru/
+http://m.bing.com/?mid=10006
+http://m.livejasmin.com/en/home
+http://m.myspace.com/home.wap?bfd=webnext
+http://m.nordstrom.com/
+http://m.photobucket.com/?src=www
+http://m.retailmenot.com/
+http://m.sears.com/
+http://m.subito.it/
+http://m.taobao.com/?sprefer=sypc00
+http://m.tmall.com/?sprefer=sypc01
+http://mi.nba.com/_touch/
+http://mobile.news.com.au/
+http://mobile.wetter.com/
+http://tw.m.wretch.yahoo.com/
+http://wap.sogou.com/?fr=s-sogou&amp;clk=s-sogou
+http://www.buzzfeed.com/?s=mobile
+http://www.etsy.com/
+http://www.tripadvisor.com/
+http://www.verizonwireless.com/b2c/index.html
+http://www.wikia.com/Wikia
+https://online.citibank.com/US/Welcome.c
+https://www.outbrain.com/
+</pre>
+
+<p>There are also only 5 domains using at least one instance of transition without any prefixes.</p>
+
+<h2 id="survey-transform">CSS shorthand <code>transform</code> property</h2>
+
+<p>We are applying the same type of queries than for transition.</p>
+
+<h3 id="transformall">Some combination of prefixes </h3>
+
+<pre>grep "SURVEY"  log-2012-08-opera-dsk.txt | sed 's/^.*SURVEY: //' | sort | uniq -c | grep 'transform' | awk '{print $2}' | sort | wc -l</pre>
+
+<p>In parenthesis the number of sites which have all vendor prefixes for at least one CSS rule on the site: <code>['transform', 'moz', 'ms', 'o', 'webkit', 'prefixless']</code></p>
+
+<ul>
+    <li>Desktop: 137 (65)</li>
+    <li>Mobile: 111 (18)</li>
+</ul>
+
+<p>frequency for each vendor prefixes?</p>
+
+<p>For Opera for example</p>
+<pre>grep "SURVEY"  log-2012-08-opera-mob.txt | sed 's/^.*SURVEY: //' | sort | uniq -c | grep 'transform'| grep "'o'" | awk '{print $2}' | sort | uniq -c |wc -l</pre>
+
+<table>
+    <caption>Number of sites a vendor prefix is being used at least once for transform shorthand</caption>
+    <thead>
+        <tr>
+            <th>vendor prefix</th>
+            <td>webkit</td>
+            <td>moz</td>
+            <td>ms</td>
+            <td>o</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>Desktop</th>
+            <td>96</td>
+            <td>88</td>
+            <td>40</td>
+            <td>64</td>
+        </tr>
+        <tr>
+            <th>Mobile</th>
+            <td>110</td>
+            <td>75</td>
+            <td>28</td>
+            <td>50</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>How many of these sites without the prefixless version use <strong>only one vendor prefix</strong>, such as</p>
+
+
+<table>
+    <caption>Number of sites with rules having only one prefixed css property for transform shorthand</caption>
+    <thead>
+        <tr>
+            <th>vendor prefix</th>
+            <td>webkit</td>
+            <td>moz</td>
+            <td>ms</td>
+            <td>o</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>Desktop</th>
+            <td>18</td>
+            <td>0</td>
+            <td>0</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <th>Mobile</th>
+            <td>48</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2 id="survey-animation">CSS shorthand <code>animation</code> property</h2>
+
+<p>We are applying the same type of queries than for transition.</p>
+
+<h3 id="animationall">Some combination of prefixes </h3>
+
+<pre>grep "SURVEY"  log-2012-08-opera-dsk.txt | sed 's/^.*SURVEY: //' | sort | uniq -c | grep 'animation' | awk '{print $2}' | sort | uniq |  wc -l</pre>
+
+<p>In parenthesis the number of sites which have all vendor prefixes for at least one CSS rule on the site: <code>['animation', 'moz', 'ms', 'o', 'webkit', 'prefixless']</code></p>
+
+<ul>
+    <li>Desktop: 24 (5)</li>
+    <li>Mobile: 22 (3)</li>
+</ul>
+
+<p>frequency for each vendor prefixes?</p>
+
+<p>For Opera for example</p>
+<pre>grep "SURVEY"  log-2012-08-opera-mob.txt | sed 's/^.*SURVEY: //' | sort | uniq -c | grep 'animation'| grep "'o'" | awk '{print $2}' | sort | uniq -c |wc -l</pre>
+
+<table>
+    <caption>Number of sites a vendor prefix is being used at least once for animation shorthand</caption>
+    <thead>
+        <tr>
+            <th>vendor prefix</th>
+            <td>webkit</td>
+            <td>moz</td>
+            <td>ms</td>
+            <td>o</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>Desktop</th>
+            <td>24</td>
+            <td>21</td>
+            <td>11</td>
+            <td>10</td>
+        </tr>
+        <tr>
+            <th>Mobile</th>
+            <td>22</td>
+            <td>10</td>
+            <td>4</td>
+            <td>3</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>How many of these sites without the prefixless version use <strong>only one vendor prefix</strong>, such as</p>
+
+
+<table>
+    <caption>Number of sites with rules having only one prefixed css property for animation shorthand</caption>
+    <thead>
+        <tr>
+            <th>vendor prefix</th>
+            <td>webkit</td>
+            <td>moz</td>
+            <td>ms</td>
+            <td>o</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>Desktop</th>
+            <td>2</td>
+            <td>0</td>
+            <td>0</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <th>Mobile</th>
+            <td>11</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>We can notice that the situation for the shorthand animation <strong>seems</strong> less problematic. As mentionned in the caveats we would have to double check for the individual properties. Still we can take this as a good sign.</p>
+
+<h2 id="survey-bgsize">CSS <code>background-size</code> property</h2>
+
+<p>We are applying the same type of queries than for transition.</p>
+
+<h3 id="bgsizeall">Some combination of prefixes </h3>
+
+<pre>grep "SURVEY"  log-2012-08-opera-dsk.txt | sed 's/^.*SURVEY: //' | sort | uniq -c | grep 'background-size' | awk '{print $2}' | sort | uniq |  wc -l</pre>
+
+<p>In parenthesis the number of sites which have all vendor prefixes for at least one CSS rule on the site: <code>['background-size', 'moz', 'ms', 'o', 'webkit', 'prefixless']</code></p>
+
+<ul>
+    <li>Desktop: 74 (5)</li>
+    <li>Mobile: 132 (3)</li>
+</ul>
+
+<p>frequency for each vendor prefixes?</p>
+
+<p>For Opera for example</p>
+<pre>grep "SURVEY"  log-2012-08-opera-mob.txt | sed 's/^.*SURVEY: //' | sort | uniq -c | grep 'background-size'| grep "'o'" | awk '{print $2}' | sort | uniq -c |wc -l</pre>
+
+<table>
+    <caption>Number of sites a vendor prefix is being used at least once for animation shorthand</caption>
+    <thead>
+        <tr>
+            <th>vendor prefix</th>
+            <td>webkit</td>
+            <td>moz</td>
+            <td>ms</td>
+            <td>o</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>Desktop</th>
+            <td>23</td>
+            <td>23</td>
+            <td>5</td>
+            <td>16</td>
+        </tr>
+        <tr>
+            <th>Mobile</th>
+            <td>59</td>
+            <td>34</td>
+            <td>5</td>
+            <td>20</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>How many of these sites without the prefixless version use <strong>only one vendor prefix</strong>, such as</p>
+
+
+<table>
+    <caption>Number of sites with rules having only one prefixed css property for animation shorthand</caption>
+    <thead>
+        <tr>
+            <th>vendor prefix</th>
+            <td>webkit</td>
+            <td>moz</td>
+            <td>ms</td>
+            <td>o</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>Desktop</th>
+            <td>2</td>
+            <td>0</td>
+            <td>0</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <th>Mobile</th>
+            <td>16</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+    </tbody>
+</table>
+
+
+
+
+<footer>
+<address><a href="http://www.la-grange.net/karl/">Karl Dubost</a> (twitter: <a href="http://twitter.com/karlpro">@karlpro</a>)</address>
+<p class="date">14 August 2012</p>
+<p id="license" class="info">
+This Opera Software document is licensed under a
+<a href="http://creativecommons.org/licenses/by/3.0/" rel="license">Creative Commons Attribution 3.0 Unported</a> license.</p>
+</footer>
+</body>
+</html>
