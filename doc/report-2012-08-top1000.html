@@ -166,6 +166,19 @@ Starting new HTTP connection (1): m.sfgate.com
     <li>a redirection to a specific device application</li>
 </ul>
 
+<p>On the Mobile survey, the results are then a mix of mobile (the redirection happened) and desktop Web sites (there was no redirection for one the previous reasons). We tried to figure out <strong>roughly</strong> the number of redirections. There are some patterns with domain names.</p>
+
+<pre>grep "Starting new HTTP connection" log-2012-08-opera-mob.txt | sed "s/.*connection (1): //" | uniq | grep "^m\." | wc -l</pre>
+
+<p>152 domains start with <code>m.</code></p>
+
+<pre>grep "Starting new HTTP connection" log-2012-08-opera-mob.txt | sed "s/.*connection (1): //" | uniq | grep "^mobile" | wc -l</pre>
+
+<p>24 domains start with <code>mobile</code>. A handful had a complete different domain name.</p>
+
+<p>That is another issue to solve and re-run the <a href="https://github.com/karlcow/websurvey/issues/14">survey for only mobile Web sites</a>.</p>
+
+
 <h3 id="caveat-css">Type of CSS</h3>
 
 <p>We parsed only CSS which were set through a <code>style</code> element or a <code>link rel</code> element. We did not take into consideration styles set through the <code>style</code> attribute or through JavaScript. Some sites modify their CSS depending on the user agent and a few other rules.</p>
@@ -182,7 +195,7 @@ Starting new HTTP connection (1): m.sfgate.com
 
 <h1 id="survey">Survey Results</h1>
 
-<p>The data for the survey are available on <a href="http://github.com/karlcow/websurvey/doc/">github</a> as reference. Feel free to reuse them, point out mistakes. As said this is much a work in progress and we have certainly made mistakes. <a href="Intro">Read again the introduction…</a> it is imperfect.</p>
+<p>The data for the survey are available on <a href="http://github.com/karlcow/websurvey/doc/">github</a> as reference. Feel free to reuse them, point out mistakes. As said this is much a work in progress and we have certainly <a href="https://github.com/karlcow/websurvey/issues">made mistakes</a>. <a href="Intro">Read again the introduction…</a> it is imperfect.</p>
 
 <h2 id="linkrel">CSS types frequency</h2>
 
@@ -428,6 +441,8 @@ https://www.outbrain.com/
 </pre>
 
 <p>There are also only 5 domains using at least one instance of transition without any prefixes.</p>
+
+<h2 id="survey-transform">CSS shorthand <code>transform</code> property</h2>
 
 
 <footer>
