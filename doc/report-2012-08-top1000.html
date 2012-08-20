@@ -170,6 +170,15 @@ Starting new HTTP connection (1): m.sfgate.com
 
 <p>We parsed only CSS which were set through a <code>style</code> element or a <code>link rel</code> element. We did not take into consideration styles set through the <code>style</code> attribute or through JavaScript. Some sites modify their CSS depending on the user agent and a few other rules.</p>
 
+<h3 id="caveat-shorthand">Shorthand properties</h3>
+
+<p>In this first run, we tested only the shorthand properties. Some CSS generators create individual property rules and these are then not counted in this current survey. The main code has to be modified to take into account these cases. We opened the <a href="https://github.com/karlcow/websurvey/issues/13">issue 13</a>.</p>
+
+<p>It would also be interesting to assess what is the ratio of sites using the shorthand properties compared to the full individual rules.</p>
+
+<h3 id="caveat-manual">Manual Checking</h3>
+
+<p>The results given in that report do not mean that the Web site is completely broken for the users. It would require a very long work with a big group of volunteers for testing each individual site of the list.</p>
 
 <h1 id="survey">Survey Results</h1>
 
