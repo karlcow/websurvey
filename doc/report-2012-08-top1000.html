@@ -280,13 +280,13 @@ Starting new HTTP connection (1): m.sfgate.com
     }</pre>
 
 <p>Let's grep…</p>
-<pre>grep "SURVEY"  log-2012-08-opera-dsk.txt | sed 's/^.*SURVEY: //' | sort | uniq -c | grep 'transition' | awk '{print $2}' | sort | wc -l</pre>
+<pre>grep "SURVEY"  log-2012-08-opera-dsk.txt | sed 's/^.*SURVEY: //' | sort | uniq -c | grep 'transition' | awk '{print $2}' | sort | uniq | wc -l</pre>
 
-<p>In parenthesis the number of sites which have all vendor prefixes for at least one CSS rule on the site.</p>
+<p>In parenthesis the number of sites which have all vendor prefixes for at least one CSS rule on the site. <code>['transition', 'moz', 'ms', 'o', 'webkit', 'prefixless']</code></p>
 
 <ul>
-    <li>Desktop: 292 (65)</li>
-    <li>Mobile: 253 (46)</li>
+    <li>Desktop: 188 (65)</li>
+    <li>Mobile: 170 (46)</li>
 </ul>
 
 <p>What about the frequency for each vendor prefixes?</p>
@@ -294,7 +294,7 @@ Starting new HTTP connection (1): m.sfgate.com
 <pre>grep "SURVEY"  log-2012-08-opera-mob.txt | sed 's/^.*SURVEY: //' | sort | uniq -c | grep 'transition'| grep "'o'" | awk '{print $2}' | sort | uniq -c |wc -l</pre>
 
 <table>
-    <caption>Number of sites a vendor prefix is being used at least once</caption>
+    <caption>Number of sites a vendor prefix is being used at least once for transition shorthand</caption>
     <thead>
         <tr>
             <th>vendor prefix</th>
@@ -339,12 +339,12 @@ Starting new HTTP connection (1): m.sfgate.com
 
 <p>Let's see again the frequency for each vendor prefixes but this time without prefixless version?</p>
 
-<p>Why this is interesting? Because it shows the ability for a browser vendor to drop the prefixed version from its implementation. If the prefixed version is dropped and there is no prefixless version, the site will break for this specific browser. And the <strong>irony of this situation</strong> is that it is indeed a lot harder for webkit to drop prefixes than other browsers because a lot more sites will break. Basically, Web developers used only webkit prefixes in many CSS rules with the prefixless fallback, creating sometimes issues <strong>for other browsers now</strong> and creating issues <strong>for webkit in the future</strong>.</p>
+<p>Why this is interesting? Because it shows the ability for a browser vendor to drop the prefixed version from its implementation. If the prefixed version is dropped and there is no prefixless version, the site will break for this specific browser. And the <strong>irony of this situation</strong> is that it is indeed a lot harder for webkit to drop prefixes than other browsers because a lot more sites will break. Basically, Web developers used only webkit prefixes in many CSS rules without the prefixless fallback, creating sometimes issues <strong>for other browsers now</strong> and creating issues <strong>for webkit in the future</strong>.</p>
 
 <pre>grep "SURVEY"  log-2012-08-opera-mob.txt | sed 's/^.*SURVEY: //' | sort | uniq -c | grep 'transition'| grep "'o'" | grep -v "'prefixless'" | awk '{print $2}' | sort | uniq -c |wc -l</pre>
 
 <table>
-    <caption>Number of sites a vendor prefix is being used at least once and does not have prefixless</caption>
+    <caption>Number of sites a vendor prefix is being used at least once and does not have prefixless for transition shorthand</caption>
     <thead>
         <tr>
             <th>vendor prefix</th>
@@ -377,8 +377,11 @@ Starting new HTTP connection (1): m.sfgate.com
 
 <pre>.foo {-webkit-transition: background-color linear 1s;}</pre>
 
+<p>For example to extract Web sites using only webkit</p>
+<pre>grep "SURVEY"  log-2012-08-opera-dsk.txt | sed 's/^.*SURVEY: //' | sort | uniq -c | grep 'transition'| grep -v "prefixless" | grep -v "'o'" | grep -v "'ms'" | grep -v "'moz'"</pre>
+
 <table>
-    <caption>Number of sites with rules having only one prefixed css property</caption>
+    <caption>Number of sites with rules having only one prefixed css property for transition shorthand</caption>
     <thead>
         <tr>
             <th>vendor prefix</th>
@@ -443,6 +446,85 @@ https://www.outbrain.com/
 <p>There are also only 5 domains using at least one instance of transition without any prefixes.</p>
 
 <h2 id="survey-transform">CSS shorthand <code>transform</code> property</h2>
+
+<p>We are applying the same type of queries than for transition.</p>
+
+<h3 id="transformall">Some combination of prefixes </h3>
+
+<pre>grep "SURVEY"  log-2012-08-opera-dsk.txt | sed 's/^.*SURVEY: //' | sort | uniq -c | grep 'transform' | awk '{print $2}' | sort | wc -l</pre>
+
+<p>In parenthesis the number of sites which have all vendor prefixes for at least one CSS rule on the site: <code>['transform', 'moz', 'ms', 'o', 'webkit', 'prefixless']</code></p>
+
+<ul>
+    <li>Desktop: 137 (65)</li>
+    <li>Mobile: 111 (18)</li>
+</ul>
+
+<p>frequency for each vendor prefixes?</p>
+
+<p>For Opera for example</p>
+<pre>grep "SURVEY"  log-2012-08-opera-mob.txt | sed 's/^.*SURVEY: //' | sort | uniq -c | grep 'transform'| grep "'o'" | awk '{print $2}' | sort | uniq -c |wc -l</pre>
+
+<table>
+    <caption>Number of sites a vendor prefix is being used at least once for transform shorthand</caption>
+    <thead>
+        <tr>
+            <th>vendor prefix</th>
+            <td>webkit</td>
+            <td>moz</td>
+            <td>ms</td>
+            <td>o</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>Desktop</th>
+            <td>96</td>
+            <td>88</td>
+            <td>40</td>
+            <td>64</td>
+        </tr>
+        <tr>
+            <th>Mobile</th>
+            <td>110</td>
+            <td>75</td>
+            <td>28</td>
+            <td>50</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>How many of these sites without the prefixless version use <strong>only one vendor prefix</strong>, such as</p>
+
+
+<table>
+    <caption>Number of sites with rules having only one prefixed css property for transform shorthand</caption>
+    <thead>
+        <tr>
+            <th>vendor prefix</th>
+            <td>webkit</td>
+            <td>moz</td>
+            <td>ms</td>
+            <td>o</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>Desktop</th>
+            <td>18</td>
+            <td>0</td>
+            <td>0</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <th>Mobile</th>
+            <td>48</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+    </tbody>
+</table>
 
 
 <footer>
