@@ -526,6 +526,88 @@ https://www.outbrain.com/
     </tbody>
 </table>
 
+<h2 id="survey-animation">CSS shorthand <code>animation</code> property</h2>
+
+<p>We are applying the same type of queries than for transition.</p>
+
+<h3 id="animationall">Some combination of prefixes </h3>
+
+<pre>grep "SURVEY"  log-2012-08-opera-dsk.txt | sed 's/^.*SURVEY: //' | sort | uniq -c | grep 'transform' | awk '{print $2}' | sort | uniq |  wc -l</pre>
+
+<p>In parenthesis the number of sites which have all vendor prefixes for at least one CSS rule on the site: <code>['animation', 'moz', 'ms', 'o', 'webkit', 'prefixless']</code></p>
+
+<ul>
+    <li>Desktop: 24 (5)</li>
+    <li>Mobile: 22 (3)</li>
+</ul>
+
+<p>frequency for each vendor prefixes?</p>
+
+<p>For Opera for example</p>
+<pre>grep "SURVEY"  log-2012-08-opera-mob.txt | sed 's/^.*SURVEY: //' | sort | uniq -c | grep 'animation'| grep "'o'" | awk '{print $2}' | sort | uniq -c |wc -l</pre>
+
+<table>
+    <caption>Number of sites a vendor prefix is being used at least once for animation shorthand</caption>
+    <thead>
+        <tr>
+            <th>vendor prefix</th>
+            <td>webkit</td>
+            <td>moz</td>
+            <td>ms</td>
+            <td>o</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>Desktop</th>
+            <td>24</td>
+            <td>21</td>
+            <td>11</td>
+            <td>10</td>
+        </tr>
+        <tr>
+            <th>Mobile</th>
+            <td>22</td>
+            <td>10</td>
+            <td>4</td>
+            <td>3</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>How many of these sites without the prefixless version use <strong>only one vendor prefix</strong>, such as</p>
+
+
+<table>
+    <caption>Number of sites with rules having only one prefixed css property for animation shorthand</caption>
+    <thead>
+        <tr>
+            <th>vendor prefix</th>
+            <td>webkit</td>
+            <td>moz</td>
+            <td>ms</td>
+            <td>o</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>Desktop</th>
+            <td>2</td>
+            <td>0</td>
+            <td>0</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <th>Mobile</th>
+            <td>11</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>We can notice that the situation for the shorthand animation <strong>seems</strong> less problematic. As mentionned in the caveats we would have to double check for the individual properties. Still we can take this as a good sign.</p>
 
 <footer>
 <address><a href="http://www.la-grange.net/karl/">Karl Dubost</a> (twitter: <a href="http://twitter.com/karlpro">@karlpro</a>)</address>
