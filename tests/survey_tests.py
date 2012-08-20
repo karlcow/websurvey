@@ -99,6 +99,14 @@ class CssTests(unittest.TestCase):
         actual = self.css.hasVendorProperty(vendorname, propertyname, declarationslist)
         self.assertTrue(actual)
 
+    # def testisPartofPropertyFamily(self):
+    #     "A list of CSS Declaration with properties such as -o-transition-delay part of transition family."
+    #     declarationslist = cssutils.css.CSSStyleDeclaration(cssText='-o-transition-delay: 1s;')
+    #     vendorname = "o"
+    #     propertyname = "transition"
+    #     actual = self.css.hasVendorProperty(vendorname, propertyname, declarationslist)
+    #     self.assertTrue(actual)
+
     def testhasNotVendorProperty(self):
         "For a list of CSS declarations, -vendor-property is not here, return False"
         declarationslist = cssutils.css.CSSStyleDeclaration(cssText='color: red;-webkit-color:red;-moz-color:red;')
