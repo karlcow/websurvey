@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>Opera - Vendor Prefixes Report for CSS animation, transform, transition, background-size</title>
-    <link rel="stylesheet" href="http://www.la-grange.net/style/simple.css">
+    <link rel="stylesheet" href="style/simple.css">
     <style>
     table {font-size: .8rem;
         border-collapse:collapse;
@@ -35,8 +35,12 @@
     text-align:left}
     tbody {background-color: rgb(245,245,245);}
 
+    body {margin-bottom:200px;}
     footer {
         width:100%;
+        position: fixed;
+        bottom:0;
+        left:0;
         background-color: rgb(245,245,245);
         padding: 1rem;}
     .important {border-left: 5px solid #f55;
@@ -65,7 +69,7 @@
 
 <h2 id="report-bugs">How to report bugs, suggest feature on this survey?</h2>
 
-<p>Everything about this survey is opensource <a href="http://github.com/karlcow/websurvey/LICENSE">under MIT License</a>, you are welcome to take the source code and run your own. It would be appreciated though if you could submit patches, <a href="http://github.com/karlcow/websurvey/issues">suggest features</a>, etc. This is a first draft or alpha if you prefer. A lot of things can be done to improve and make it useful for all of us.</p>
+<p>Everything about this survey is opensource <a href="https://github.com/karlcow/websurvey/tree/master/LICENSE">under MIT License</a>, you are welcome to take the source code and run your own. It would be appreciated though if you could submit patches, <a href="http://github.com/karlcow/websurvey/issues">suggest features</a>, etc. This is a first draft or alpha if you prefer. A lot of things can be done to improve and make it useful for all of us.</p>
 
 <h2 id="sample">Alexa Data Sample</h2>
 
@@ -195,7 +199,7 @@ Starting new HTTP connection (1): m.sfgate.com
 
 <h1 id="survey">Survey Results</h1>
 
-<p>The data for the survey are available on <a href="http://github.com/karlcow/websurvey/doc/">github</a> as reference. Feel free to reuse them, point out mistakes. As said this is much a work in progress and we have certainly <a href="https://github.com/karlcow/websurvey/issues">made mistakes</a>. <a href="Intro">Read again the introduction…</a> it is imperfect.</p>
+<p>The data for the survey are available on <a href="http://github.com/karlcow/websurvey/tree/master/doc/">github</a> as reference. Feel free to reuse them, point out mistakes. As said this is much a work in progress and we have certainly <a href="https://github.com/karlcow/websurvey/issues">made mistakes</a>. <a href="Intro">Read again the introduction…</a> it is imperfect.</p>
 
 <h2 id="linkrel">CSS types frequency</h2>
 
@@ -630,7 +634,7 @@ https://www.outbrain.com/
 <pre>grep "SURVEY"  log-2012-08-opera-mob.txt | sed 's/^.*SURVEY: //' | sort | uniq -c | grep 'background-size'| grep "'o'" | awk '{print $2}' | sort | uniq -c |wc -l</pre>
 
 <table>
-    <caption>Number of sites a vendor prefix is being used at least once for animation shorthand</caption>
+    <caption>Number of sites a vendor prefix is being used at least once for background-size</caption>
     <thead>
         <tr>
             <th>vendor prefix</th>
@@ -662,7 +666,7 @@ https://www.outbrain.com/
 
 
 <table>
-    <caption>Number of sites with rules having only one prefixed css property for animation shorthand</caption>
+    <caption>Number of sites with rules having only one prefixed css property for background-size</caption>
     <thead>
         <tr>
             <th>vendor prefix</th>
