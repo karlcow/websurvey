@@ -8,36 +8,9 @@ It has led to a situation where some end users have a broken experience on some 
 
 To assess this situation, I (on my [Opera Developer Relations](http://dev.opera.com/) time) created this web survey script. There are a lot of issues with the script itself and its interaction with the web. It is a **first step**. It deserves a lot more care, and I will open some issues to fix. Pull requests are welcome! At least it could provide a common code base for everyone to work on. Read the report of August 2012 if you want to make more sense of some of the issues.
 
-# Code for Analyzing CSS properties from a list of URIs.
+## The August Report
 
-## Goals
-
-Given a list of URIs: sitelist = [uri1, uri2, …, urin]
-
-* HTTP GET the URI (with a specific user agent)
-* Parse it and find the CSS related URIs and the properties in the style sheets
-* HTTP GET each URI (with the same user agent)
-* Compile all the CSS Properties into a single object
-* Analyze this object with different rules
-
-## Analysis Modules
-
-### Vendor Prefixes
-
-	for selectorGroup in cssRules:
-		score = 0
-		// separate in
-		if -vendorA-rule in declarationNameList:
-			score =+ 1
-		    if -vendorB-rule in declarationNameList:
-			score =+ 2
-			if rule in declarationNameList:
-			score =+ 4
-
-* if score = 1, -vendorA- rule only in the file
-* if score = 3, -vendorA- + -vendorB-
-* if score = 5, -vendorA- + unprefixed
-* if score = 7, -vendorA- + -vendorB- + unprefixed
+We published in August 2012 a [preliminary report](http://karlcow.github.com/websurvey/doc/report-2012-08-top1000.html) that explains some of the [code issues](https://github.com/karlcow/websurvey/issues). The report is a start, not an end. It helps understand what is the status of using vendor prefixes for certain properties and defines what are the issues to solve in dealing with such a survey.
 
 ## Licence
 
